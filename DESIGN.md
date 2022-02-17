@@ -1,0 +1,11 @@
+# Problem Statement
+
+At some point in our lives, we all must have been involved in collaborative projects involving multiple team members. In such work environments, the role of recognition or simply praising team members for their efforts becomes imperative. The existence of positive reinforcement in maintaining human relationships is extremely essential. Studies show that about 79% of employees who quit their jobs claim that a lack of appreciation was a major reason for leaving. 
+<br><br> Especially during the pandemic, recognizing efforts have become even more important in today’s remote work environment, where people are not able to connect at an emotional level and tend to become demotivated when they are not rewarded for their collaborative efforts. The existence of an automated tool that recognizes and rewards efforts of employees and students will increase productivity, team cohesiveness, and employee retention.
+
+# Bot Description
+
+We propose a bot to provide positive reinforcement for actions such as answering GitHub issues, regular commits to a repository, and using positive words during conversations on MatterMost channels. Along with the rewards, the bot would provide channel statistics and self statistics features. This would be achieved by monitoring the events on Mattermost channels and GitHub events and accordingly points would be awarded based on the respective action. The reward system would be level-based, whenever a user would accumulate a certain number of points, they would earn a badge specific to the level attained.
+<br><br> Students/colleagues are generally disinclined to come forward and assist their peers when collaboration is desired. A bot would be a good solution for overcoming the issue, since it's automatic with unbiased decision-making abilities would promote a healthy study/work environment where each and everyone benefits. It would help in building a deeper personal connection with their team members. The bot just responds to events. The bot does not fit into categories that have been discussed during the class.
+
+### Tagline: Together we achieve more
