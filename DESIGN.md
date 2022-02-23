@@ -74,7 +74,24 @@ We propose a bot that acts as a secondary reinforcer for actions such as answeri
 &nbsp;&nbsp;&nbsp;&nbsp; [E1] Wrong query provided unrelated to self statistics.<br><br>
 
 
+# Design Sketches
 
+- Bot rewarding points for making commit
 
+![commit](https://media.github.ncsu.edu/user/22719/files/54611231-d6fd-4ff2-bc16-77a4428edf97)
 
-   
+- Bot rewarding points for solving issues
+
+![issue](https://media.github.ncsu.edu/user/22719/files/91ea5cb5-5d88-4e15-95ca-664a3e001eef)
+
+- Bot appreciating positive reinforcement features using Text Analysis
+
+![positive](https://media.github.ncsu.edu/user/22719/files/8eb6cf2d-cf77-4fcf-82d6-6bf7a820c499)
+
+![positive2](https://media.github.ncsu.edu/user/22719/files/592efbcc-d275-41a3-91df-cdae035e2527)
+
+- Bot generates the User self statistics
+
+![self stats](https://media.github.ncsu.edu/user/22719/files/68191fba-bfa2-4082-83b5-94271d6cdcbb)
+
+# Architecture Design
