@@ -94,6 +94,13 @@ We propose a bot that acts as a secondary reinforcer for actions such as answeri
 
 ![self stats](https://media.github.ncsu.edu/user/22719/files/68191fba-bfa2-4082-83b5-94271d6cdcbb)
 
+## Storyboard
+
+![Story1](https://media.github.ncsu.edu/user/22526/files/10b13bc6-92f6-4321-bde8-0341441a266e)
+
+![Story2](https://media.github.ncsu.edu/user/22526/files/23f36ec3-5434-47f3-beb7-f5dfe5604261)
+
+
 # Architecture Design
 
 ## Architecture Diagram
