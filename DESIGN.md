@@ -95,3 +95,34 @@ We propose a bot that acts as a secondary reinforcer for actions such as answeri
 ![self stats](https://media.github.ncsu.edu/user/22719/files/68191fba-bfa2-4082-83b5-94271d6cdcbb)
 
 # Architecture Design
+
+## Architecture Diagram
+
+![image](https://media.github.ncsu.edu/user/22526/files/6cfd0578-a8db-4c92-a59c-ae8cf79fc507)
+
+Describe the architecture components in the text.
+The platform that the bot would be embedded in is Discord. The bot would be monitoring the actions on the Github server through a webhook. The bot is also monitoring the user events using the discord API. The bot then invokes the appropriate function with respect to the use case. The functions then query and/or modify the user information stored in the Postgres database. The Postgres database stores detailed information about the rewards, the users, the channels, and the actions the user has been rewarded. We will be using the ‘sentiment’ library to perform text analysis for determining the score of positive messages in channels. Finally, the bot sends the response back to the user through the proxy using the discord APIs. The third-party services we would be using are Postgres DB, Text analysis library, and GitHub webhook.
+
+## Constraints and guidelines 
+1. The Bot cannot send information from one user to another.
+2. Bot can only handle a query in the form of self statistics.
+3. Dependency on the server for the bot to be live.
+4. Bot cannot handle other GitHub events except GitHub issues and Git commits.
+
+## Additional design patterns 
+The Software Architecture design patterns that are relevant to our bot design are as follows:
+
+### Repository:
+It will focus on the encapsulation of the logic necessary to interact with the centralized data. It will decouple the nitty-gritty of the infrastructure layer from the bot application.
+
+### Object-Oriented:
+It will help divide the responsibilities of the bot into individual reusable and self-sufficient objects. It will make the code more testable and robust.
+
+### Pipes and filters
+Filter components will process the input as they receive and perform transformations on data.  Pipe components will serve as connectors for the stream of data being transformed, each connected to the next component in the pipeline. This architecture would help in filtering out user data and then aggregating the reward points.
+
+### Implicit and explicit Invocation
+The bot is invoked on implicit events such as committing to the Github repository and answering the Github issues. The bot is also invoked on specific commands from the user.
+ 
+ 
+
