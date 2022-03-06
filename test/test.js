@@ -12,8 +12,6 @@ describe("RewardBot Tests", function() {
 
     this.timeout(5000);
     
-
-
 });
 
 

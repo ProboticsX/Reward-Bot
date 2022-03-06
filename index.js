@@ -15,7 +15,7 @@ bot.on('ready', () => {
 bot.on("message", message => {
     console.log("Message from ",message.author.username)
     if (message.author.username == "GitHub") {
-        rewardForGithubActivity(message);
+        return rewardForGithubActivity(message);
     } else {
         positiveMessageAnalysis(message);
     }
@@ -28,13 +28,18 @@ function rewardForGithubActivity(message) {
         type = "issue";
     } else if(type.includes("commit")) {
         type = "commit";
+    }else{
+        //If neither commit or issue, do nothing
+        return false;
     }
     points = calculatePoints(type);
-    author = message.embeds[0].author.name;
-    console.log("Awarded ", points, " to user ", author, " for ", type)
-    if(points != 0) {
-        updatePoints(author, type, points, "", dbPath); 
+    if (points > 0)
+    {
+        author = message.embeds[0].author.name;
+        updatePoints(author, type, points, "", dbPath);
+        console.log("Awarded ", points, " to user ", author, " for ", type)
     }
+    return true;
 }
 
 function calculatePoints(type) {
@@ -72,7 +77,7 @@ function writeFile(filePath, data) {
     })
 }
 
-function updatePoints(author, type, points, channelId, fileName) {
+function updatePoints(author, type, points, channelId, fileName) {    
     jsonReader(fileName, (err, data) => {
         if(err) {
             console.log(err);
