@@ -1,9 +1,9 @@
-const {Intents, Client } = require("discord.js");
+const {Intents, Client, Attachment, Message, MessageEmbed } = require("discord.js");
 const fs = require('fs');
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 require('dotenv').config();
 var Sentiment = require('sentiment');
-var serverMembers = []
+var serverMembers = {}
 
 bot.login(process.env.DISCORDTOKEN);
 
@@ -14,7 +14,11 @@ bot.on('ready', () => {
 
 bot.on("message", message => {
     console.log("Message from ",message.author.username)
+    
+    //console.log(typeof(serverMembers[0]));
+
     if (message.author.username == "GitHub") {
+
         rewardForGithubActivity(message);
     } else {
         positiveMessageAnalysis(message);
@@ -24,6 +28,8 @@ bot.on("message", message => {
 
 function rewardForGithubActivity(message) {
     type = message.embeds[0].title;
+    githubUrl = message.embeds[0].url;
+
     if(type.includes("Issue closed")) {
         type = "issue";
     } else if(type.includes("commit")) {
@@ -31,9 +37,16 @@ function rewardForGithubActivity(message) {
     }
     points = calculatePoints(type);
     author = message.embeds[0].author.name;
+
+
+
     console.log("Awarded ", points, " to user ", author, " for ", type)
     if(points != 0) {
         updatePoints(author, type, points, ""); 
+        if(type == "issue"){
+            rewardForClosingIssue(author, githubUrl, points)
+        }
+
     }
 }
 
@@ -107,8 +120,18 @@ function rewardForCommit(author, action) {
 
 }
 
-function rewardForClosingIssue(author, action) {
-   
+function rewardForClosingIssue(author, githubUrl, points) {
+   let userId  = serverMembers[author].id
+   bot.users.fetch(userId, false).then((user) => {
+        const exampleEmbed = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Here is your Reward!🎁')
+        .setAuthor({ name: "+"+points+" points", iconURL: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png', url: githubUrl })
+        .setDescription(author+', you are the perfect Issue Solver ✅')
+        .setThumbnail('https://www.conquestgraphics.com/images/default-source/default-album/rewards.png?sfvrsn=a333198d_0')
+        .setTimestamp()
+        user.send({ embeds: [exampleEmbed] }); 
+});
 }
 
 
@@ -116,9 +139,9 @@ function getServerMembers(){
     
     const guild = bot.guilds.cache.get(process.env.GUILD_ID)
     guild.members.fetch()
-     .then((members) =>
-     members.forEach((member) => serverMembers.push(member.user.username)
-     ),
+     .then((members) => {
+        members.forEach((member) => serverMembers[member.user.username] = member.user )   
+     }
      );
     
 }
