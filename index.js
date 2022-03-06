@@ -2,6 +2,8 @@ const {Intents, Client } = require("discord.js");
 const fs = require('fs');
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 require('dotenv').config();
+var Sentiment = require('sentiment');
+
 
 bot.login(process.env.DISCORDTOKEN);
 
@@ -14,7 +16,7 @@ bot.on("message", message => {
     if (message.author.username == "GitHub") {
         rewardForGithubActivity(message);
     } else {
-        queryFromUser(message);
+        positiveMessageAnalysis(message);
     }
 
 });
@@ -30,7 +32,7 @@ function rewardForGithubActivity(message) {
     author = message.embeds[0].author.name;
     console.log("Awarded ", points, " to user ", author, " for ", type)
     if(points != 0) {
-        updatePoints(author, type, points); 
+        updatePoints(author, type, points, ""); 
     }
 }
 
@@ -69,7 +71,7 @@ function writeFile(filePath, data) {
     })
 }
 
-function updatePoints(author, type, points) {
+function updatePoints(author, type, points, channelId) {
     jsonReader('db/user.json', (err, data) => {
         if(err) {
             console.log(err);
@@ -79,11 +81,19 @@ function updatePoints(author, type, points) {
                 data[author] = {
                     "commit":0,
                     "issue":0,
-                    "pr":0,
+                    "pr": {},
                     "total":0
                 }
+            }
+            if(type == "pr") {
+                if(!(channelId in data[author][type])){
+                    data[author][type][channelId] = 0;
+                }
+                data[author][type][channelId] += points;
             } 
-            data[author][type] += points;
+            else {
+                data[author][type] += points;
+            }
             data[author]['total'] += points;
             writeFile('db/user.json', data)
         }
@@ -100,7 +110,16 @@ function rewardForClosingIssue(author, action) {
    
 }
 
-function  queryFromUser(message) {
-    console.log("query")
+function positiveMessageAnalysis(message) {
+    author = message.author.username;
+    content = message.content;
+    channelId = message.channelId;
+
+    var sentiment = new Sentiment();
+    var result = sentiment.analyze(content);
+    if (result.score > 0){
+        updatePoints(author, "pr", result.score, channelId)
+    }
+
 }
 
