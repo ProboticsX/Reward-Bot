@@ -1,13 +1,14 @@
 const {Intents, Client } = require("discord.js");
 const fs = require('fs');
-const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 require('dotenv').config();
 var Sentiment = require('sentiment');
-
+var serverMembers = []
 
 bot.login(process.env.DISCORDTOKEN);
 
 bot.on('ready', () => {
+    getServerMembers()
     console.log("Online!!");
 });
 
@@ -109,6 +110,19 @@ function rewardForCommit(author, action) {
 function rewardForClosingIssue(author, action) {
    
 }
+
+
+function getServerMembers(){
+    
+    const guild = bot.guilds.cache.get(process.env.GUILD_ID)
+    guild.members.fetch()
+     .then((members) =>
+     members.forEach((member) => serverMembers.push(member.user.username)
+     ),
+     );
+    
+}
+
 
 function positiveMessageAnalysis(message) {
     author = message.author.username;
