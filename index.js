@@ -3,6 +3,7 @@ const fs = require('fs');
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 require('dotenv').config();
 var Sentiment = require('sentiment');
+var dbPath = 'db/user.json'
 
 
 bot.login(process.env.DISCORDTOKEN);
@@ -32,7 +33,7 @@ function rewardForGithubActivity(message) {
     author = message.embeds[0].author.name;
     console.log("Awarded ", points, " to user ", author, " for ", type)
     if(points != 0) {
-        updatePoints(author, type, points, ""); 
+        updatePoints(author, type, points, "", dbPath); 
     }
 }
 
@@ -71,8 +72,8 @@ function writeFile(filePath, data) {
     })
 }
 
-function updatePoints(author, type, points, channelId) {
-    jsonReader('db/user.json', (err, data) => {
+function updatePoints(author, type, points, channelId, fileName) {
+    jsonReader(fileName, (err, data) => {
         if(err) {
             console.log(err);
         } else {
@@ -95,19 +96,9 @@ function updatePoints(author, type, points, channelId) {
                 data[author][type] += points;
             }
             data[author]['total'] += points;
-            writeFile('db/user.json', data)
+            writeFile(fileName, data)
         }
     })
-}
-   
-
-function rewardForCommit(author, action) {
-
-
-}
-
-function rewardForClosingIssue(author, action) {
-   
 }
 
 function positiveMessageAnalysis(message) {
@@ -118,7 +109,7 @@ function positiveMessageAnalysis(message) {
     var sentiment = new Sentiment();
     var result = sentiment.analyze(content);
     if (result.score > 0){
-        updatePoints(author, "pr", result.score, channelId)
+        updatePoints(author, "pr", result.score, channelId, dbPath)
     }
 
 }
