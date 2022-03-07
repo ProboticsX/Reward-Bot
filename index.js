@@ -6,25 +6,37 @@ var Sentiment = require('sentiment');
 var dbPath = 'db/user.json'
 var serverMembers = {}
 
-bot.login(process.env.DISCORDTOKEN);
 
-bot.on('ready', () => {
-    getServerMembers()
-    console.log("Online!!");
-});
+async function main()
+{
+    bot.login(process.env.DISCORDTOKEN);
 
-bot.on("message", message => {
-    console.log("Message from ",message.author.username)
-    if (message.author.username == "GitHub") {
-        return rewardForGithubActivity(message);
-    } else {
-        positiveMessageAnalysis(message);
-    }
-});
+    bot.on('ready', () => {
+        getServerMembers()
+        console.log("Online!!");
+    });
 
-function rewardForGithubActivity(message) {
+    bot.on("message", message => {
+        var author_obj = new Object();
+        if (message.author.username == "GitHub") {
+            author_obj = rewardForGithubActivity(message, dbPath);
+            if(author_obj["type"] == "issue"){
+                rewardForClosingIssue(author, githubUrl, points);
+            } else if(author_obj["type"].includes("commit")) {
+                rewardForCommit(author, githubUrl, points);
+            }
+        } else {
+            author_obj = positiveMessageAnalysis(message, dbPath);
+            rewardForPositiveMessages(author_obj["author"], author_obj["points"]);
+        }
+    });
+}   
+
+function rewardForGithubActivity(message, dbPath) {
     type = message.embeds[0].title;
     githubUrl = message.embeds[0].url;
+    var return_obj = new Object();
+
     if(type.includes("Issue closed")) {
         type = "issue";
     } else if(type.includes("commit")) {
@@ -40,14 +52,13 @@ function rewardForGithubActivity(message) {
         author = message.embeds[0].author.name;
         updatePoints(author, type, points, "", dbPath);
         console.log("Awarded ", points, " to user ", author, " for ", type)
-        if(type == "issue"){
-            rewardForClosingIssue(author, githubUrl, points);
-        } else if(type.includes("commit")) {
-            rewardForCommit(author, githubUrl, points);
-        }
+        return_obj["author"] = author;
+        return_obj["githubUrl"] = githubUrl;
+        return_obj["points"] = points;
+        return_obj["type"] = type;
 
     }
-    return true;
+    return return_obj;
 }
 
 function calculatePoints(type) {
@@ -166,18 +177,45 @@ function getServerMembers(){
     
 }
 
-function positiveMessageAnalysis(message) {
+function positiveMessageAnalysis(message, dbPath) {
     author = message.author.username;
     content = message.content;
     channelId = message.channelId;
+    var return_obj = new Object();
+
+    if ((!author) || (!content) || (!channelId))
+    {
+        return false
+    }
 
     var sentiment = new Sentiment();
     var result = sentiment.analyze(content);
     let points = result.score;
-    if (result.score > 0){
+    if (points > 0){
         updatePoints(author, "pr", points, channelId, dbPath)
-        rewardForPositiveMessages(author, points);
+        return_obj["author"] = author;
+        return_obj["points"] = points;
+        
     }
+    return return_obj;
 
 }
 
+(async () => 
+{
+    if (process.env.NODE_ENV != 'test') {
+        await main();
+    }
+})()
+
+
+module.exports.rewardForGithubActivity = rewardForGithubActivity;
+module.exports.calculatePoints = calculatePoints;
+module.exports.jsonReader = jsonReader;
+module.exports.writeFile = writeFile;
+module.exports.updatePoints = updatePoints;
+module.exports.rewardForCommit = rewardForCommit;
+module.exports.rewardForClosingIssue = rewardForClosingIssue;
+module.exports.rewardForPositiveMessages = rewardForPositiveMessages;
+module.exports.getServerMembers = getServerMembers;
+module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
