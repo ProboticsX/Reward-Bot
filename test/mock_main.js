@@ -44,7 +44,6 @@ async function findPRPoints(username, channel) {
 	return 0;
 }
 
-exports.findMostFrequentAssignee = findMostFrequentAssignee;
 exports.findCommitPoints = findCommitPoints;
 exports.findIssuePoints = findIssuePoints;
 exports.findPRPoints = findPRPoints;
