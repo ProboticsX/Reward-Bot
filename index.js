@@ -5,6 +5,23 @@ require('dotenv').config();
 var Sentiment = require('sentiment');
 var dbPath = 'db/user.json'
 var serverMembers = {}
+var embedData = {
+    "commit" : {
+        "iconURL" : 'https://w7.pngwing.com/pngs/72/974/png-transparent-computer-icons-merge-git-github-text-git-symbol-thumbnail.png',
+        "desc" : ', I like the way you commit!📝',
+        "thumbnailUrl" : 'https://cdn-icons-png.flaticon.com/512/4168/4168977.png'
+    },
+    "issue" : {
+        "iconURL" : 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+        "desc" : ', you are the perfect Issue Solver ✅',
+        "thumbnailUrl" : 'https://www.conquestgraphics.com/images/default-source/default-album/rewards.png?sfvrsn=a333198d_0'
+    },
+    "pr" : {
+        "iconURL" : 'https://w7.pngwing.com/pngs/880/606/png-transparent-clapping-hands-emoji-clapping-emojipedia-sticker-applause-clap-hand-material-emoticon.png',
+        "desc" : ', keep appreciating and helping others!!',
+        "thumbnailUrl" : 'https://cdn-icons-png.flaticon.com/512/1426/1426735.png'
+    },
+}
 
 
 async function main()
@@ -21,13 +38,13 @@ async function main()
         if (message.author.username == "GitHub") {
             author_obj = rewardForGithubActivity(message, dbPath);
             if(author_obj["type"] == "issue"){
-                rewardForClosingIssue(author, githubUrl, points);
-            } else if(author_obj["type"].includes("commit")) {
-                rewardForCommit(author, githubUrl, points);
+                sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
+            } else if(author_obj["type"] == "commit") {
+                sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
         } else {
             author_obj = positiveMessageAnalysis(message, dbPath);
-            rewardForPositiveMessages(author_obj["author"], author_obj["points"]);
+            sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
         }
     });
 }   
@@ -36,6 +53,7 @@ function rewardForGithubActivity(message, dbPath) {
     type = message.embeds[0].title;
     githubUrl = message.embeds[0].url;
     var return_obj = new Object();
+    return_obj["type"] = null;
 
     if(type.includes("Issue closed")) {
         type = "issue";
@@ -123,48 +141,19 @@ function updatePoints(author, type, points, channelId, fileName) {
     })
 }
 
-
-function rewardForCommit(author, githubUrl, points) {
+function sendMessageEmbed(author, githubUrl, points, type) {
     let userId  = serverMembers[author].id
     bot.users.fetch(userId, false).then((user) => {
          const messageEmbed = new MessageEmbed()
          .setColor('#0099ff')
          .setTitle('Here is your Reward!🎁')
-         .setAuthor({ name: "+"+points+" points", iconURL: 'https://w7.pngwing.com/pngs/72/974/png-transparent-computer-icons-merge-git-github-text-git-symbol-thumbnail.png', url: githubUrl })
-         .setDescription(author+', i like the way you commit!📝')
-         .setThumbnail('https://cdn-icons-png.flaticon.com/512/4168/4168977.png')
+         .setAuthor({ name: "+"+points+" points", iconURL: embedData[type].iconURL, url: githubUrl })
+         .setDescription(author + embedData[type].desc)
+         .setThumbnail(embedData[type].thumbnailUrl)
          .setTimestamp()
          user.send({ embeds: [messageEmbed] }); 
  });
- }
-
-function rewardForClosingIssue(author, githubUrl, points) {
-   let userId  = serverMembers[author].id
-   bot.users.fetch(userId, false).then((user) => {
-        const messageEmbed = new MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Here is your Reward!🎁')
-        .setAuthor({ name: "+"+points+" points", iconURL: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png', url: githubUrl })
-        .setDescription(author+', you are the perfect Issue Solver ✅')
-        .setThumbnail('https://www.conquestgraphics.com/images/default-source/default-album/rewards.png?sfvrsn=a333198d_0')
-        .setTimestamp()
-        user.send({ embeds: [messageEmbed] }); 
-});
 }
-
-function rewardForPositiveMessages(author, points) {
-    let userId  = serverMembers[author].id
-    bot.users.fetch(userId, false).then((user) => {
-         const messageEmbed = new MessageEmbed()
-         .setColor('#0099ff')
-         .setTitle('Here is your Reward!✨')
-         .setAuthor({ name: "+"+points+" points", iconURL: 'https://w7.pngwing.com/pngs/880/606/png-transparent-clapping-hands-emoji-clapping-emojipedia-sticker-applause-clap-hand-material-emoticon.png' })
-         .setDescription(author+', keep appreciating and helping others!!')
-         .setThumbnail('https://cdn-icons-png.flaticon.com/512/1426/1426735.png')
-         .setTimestamp()
-         user.send({ embeds: [messageEmbed] }); 
- });
- }
 
 
 function getServerMembers(){
@@ -214,8 +203,6 @@ module.exports.calculatePoints = calculatePoints;
 module.exports.jsonReader = jsonReader;
 module.exports.writeFile = writeFile;
 module.exports.updatePoints = updatePoints;
-module.exports.rewardForCommit = rewardForCommit;
-module.exports.rewardForClosingIssue = rewardForClosingIssue;
-module.exports.rewardForPositiveMessages = rewardForPositiveMessages;
 module.exports.getServerMembers = getServerMembers;
 module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
+module.exports.sendMessageEmbed = sendMessageEmbed;
