@@ -56,6 +56,20 @@ The Reward Bot is designed to reward points for every Issue which a user closes 
 
 ![image](https://media.github.ncsu.edu/user/22719/files/d73fb2a3-d18b-472e-a875-f2048e1b8937)
 
+### USE CASE #3: Rewards for using Positive Words
+
+The Reward Bot is designed to reward points for using positive words inside discord channel to build positive enforcement among users. The use case flow is as follows:
+
+- Suppose the user "sshubha" appreciates other people on the channel.
+
+![image](https://media.github.ncsu.edu/user/22719/files/a5fd7827-ca04-4565-8d48-c2e6e3b5d56f)
+
+- The Reward Bot rewards the user for using positive words.
+
+![image](https://media.github.ncsu.edu/user/22719/files/834a14d5-b5f0-4055-9ff3-69644af6fe01)
+
+
+
 
 
 
