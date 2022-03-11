@@ -68,7 +68,16 @@ async function main()
 }   
 
 function rewardForGithubActivity(message, dbPath) {
-    // console.log(message)
+    
+    // Received the message from github
+    // message is in json format
+    // Receives dbPath as argument, where the points need to be updated
+    // only gives rewards for closed issues or commits
+    // calls the calculatePoints() function which returns the number of points to be awarded
+    // calls the updatePoints to update the database
+    // returns a dict style object with author name, points, etc.
+
+
     type = message.embeds[0].title;
     githubUrl = message.embeds[0].url;
     var return_obj = new Object();
@@ -95,6 +104,13 @@ function rewardForGithubActivity(message, dbPath) {
 }
 
 function calculatePoints(type) {
+
+    // Gets type as argument
+    // type can be either issue or commit
+    // returns 5 points for commits 
+    // return 10 points for issues
+    // if type is neither issue or commit, returns 0
+
     if(type == "issue") 
         return 10;
     else if(type == "commit") 
@@ -103,12 +119,18 @@ function calculatePoints(type) {
 }
 
 function writeFile(filePath, data) {
+
+    // Function to write json data to the provided database path
+    // data -> The data to be written to the database
+    // filePath -> dbpath where updates need to be made
+
     fs.writeFile(filePath, JSON.stringify(data), err =>{
         if(err)
             console.log(err);
         else 
             console.log('File successfully written!');
     });
+    return true;
   }
 
 async function getServerMemberDetailsFromDB() {
@@ -126,7 +148,16 @@ async function postServerMemberDetailsFromDB(details) {
 	await github.postServerMemberDetails(newdetails); 
 }
 
-async function updatePoints(author, type, points, channelId, fileName) {    
+async function updatePoints(author, type, points, channelId, fileName) {
+
+    // Received the arguments: author, type, points, channelId, fileName
+    // author -> author name
+    // type -> issue, commit or pr
+    // points -> number of points to be awarded
+    // channelId: discord channel id
+    // fileName: dbpath where updates need to be made
+
+
     let data = await getServerMemberDetailsFromDB(); 
     if(!(author in data)){
         console.log("Author does not Exists")
@@ -174,6 +205,13 @@ function getServerMembers(){
 }
 
 function positiveMessageAnalysis(message, dbPath) {
+
+    // Received the arguments: message, dbPath
+    // message -> message on the channel to be given a score
+    // dbPath -> dbpath where updates need to be made
+    // Sentiment library is used to determine the score of the message
+    // Returns the object containing author and points
+
     author = message.author.username;
     content = message.content;
     channelId = message.channelId;
@@ -205,3 +243,4 @@ module.exports.updatePoints = updatePoints;
 module.exports.getServerMembers = getServerMembers;
 module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
 module.exports.sendMessageEmbed = sendMessageEmbed;
+module.exports.writeFile = writeFile;
