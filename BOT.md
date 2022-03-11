@@ -1,8 +1,8 @@
-# Bot Implementation
+# Bot Implementation 	🤖
 
-## Bot Platform
+## Bot Platform 💻
 
-We are using the ```Discord``` platform to implement our Reward bot. Also, we integrated the bot with GitHub to monitor the activities occuring on the Github repository (eg. commits, issues, comments, etc) and link it to our Discord platform. Hence, we were able to integrate the Github bot to our project as well with the use of some private key tokens shared between Discord and Github through Webhook.
+We are using the ```Discord``` platform to implement our Reward bot. Also, we integrated the bot with GitHub to monitor the activities occuring on the Github repository (eg. commits, issues, comments, etc) and link it to our Discord platform. Hence, we were able to integrate the Github bot to our project as well with the use of some private key tokens 🔑	shared between Discord and Github through Webhook.
 
 - Generating Discord Webhook URL
 
@@ -21,9 +21,9 @@ We are using the ```Discord``` platform to implement our Reward bot. Also, we in
 ![image](https://media.github.ncsu.edu/user/22719/files/240a368c-6847-4802-9b20-fd201fa0ac2a)
 
 
-## Bot Integration
+## Bot Integration	🧬
 
-### USE CASE #1: Rewards for Commits
+### USE CASE #1: Rewards for Commits 	🎁
 
 The Reward Bot is designed to reward points for every commit which a user does to the GitHub repo. The use case flow is as follows:
 
@@ -40,7 +40,7 @@ The Reward Bot is designed to reward points for every commit which a user does t
 ![image](https://media.github.ncsu.edu/user/22719/files/da868f84-1944-4b7a-a492-6d6fdbd36d28)
 
 
-### USE CASE #2: Rewards for Closing Issues
+### USE CASE #2: Rewards for Closing Issues 🏆	
 
 The Reward Bot is designed to reward points for every Issue which a user closes on the GitHub repo. The use case flow is as follows:
 
@@ -56,9 +56,9 @@ The Reward Bot is designed to reward points for every Issue which a user closes 
 
 ![image](https://media.github.ncsu.edu/user/22719/files/d73fb2a3-d18b-472e-a875-f2048e1b8937)
 
-### USE CASE #3: Rewards for using Positive Words
+### USE CASE #3: Rewards for using Positive Words 🎉
 
-The Reward Bot is designed to reward points for using positive words inside discord channel to build positive enforcement among users. The use case flow is as follows:
+The Reward Bot is designed to reward points for using positive words inside discord channel to build positive enforcement among users🥳. The use case flow is as follows:
 
 - Suppose the user "sshubha" appreciates other people on the channel.
 
@@ -69,24 +69,24 @@ The Reward Bot is designed to reward points for using positive words inside disc
 ![image](https://media.github.ncsu.edu/user/22719/files/834a14d5-b5f0-4055-9ff3-69644af6fe01)
 
 
-# Use Case Refinement
+# Use Case Refinement 😎
 
 As per the feedback received for DESIGN.md, we were not required to modify the use cases. So, everything remains the same as it was in DESIGN.md.
 
-# Test Coverage
+# Test Coverage 	✅
 
 We were able to achieve the test code coverage of more than 80%. All of our test statements use meaningful assert statements which can be run using command ```npx c8 npm test```
 
                             --------------------SS--------------------------------------------------------------------------------
 
-# Mocking Service Component
+# Mocking Service Component 💫	
 
 Our project requires the use of Postgress server as our user database which would be queried regularly. Since we are yet to implement the server so we have used the mocking services to mock the user database on server such that it will decouple the nitty-gritty of the infrastructure layer from the bot application using ```nock```
 
  --------------------SS--------------------------------------------------------------------------------
 
 
-# Screencast
+# Screencast 💯
 
 
 
