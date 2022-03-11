@@ -1,6 +1,21 @@
 const _ = require("underscore");
 const github = require("./github.js");
 
+async function getServerMemberDetailsFromDB() {
+	let userdetails = await github.getServerMemberDetails(); 
+	return userdetails[0];
+}
+
+async function postServerMemberDetailsFromDB(details) {
+	let newdetails = { "db" : [] }
+    let mp = {}
+    for (var user in details) {
+        mp[user] = details[user];
+    }
+    newdetails["db"].push(mp);
+	await github.postServerMemberDetails(newdetails); 
+}
+
 async function findCommitPoints(username) {
 	let userdetails = await github.getServerMemberDetails();
 	userdetails = userdetails[0];
@@ -48,3 +63,5 @@ exports.findCommitPoints = findCommitPoints;
 exports.findIssuePoints = findIssuePoints;
 exports.findPRPoints = findPRPoints;
 exports.findTotalPoints = findTotalPoints;
+exports.getServerMemberDetailsFromDB = getServerMemberDetailsFromDB;
+exports.postServerMemberDetailsFromDB = postServerMemberDetailsFromDB;
