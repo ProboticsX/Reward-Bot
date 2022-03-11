@@ -44,16 +44,13 @@ var embedData = {
     },
 }
 
-
 async function main()
 {
     bot.login(process.env.DISCORDTOKEN);
-
     bot.on('ready', () => {
         getServerMembers()
         console.log("Online!!");
     });
-
     bot.on("message", message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
@@ -71,11 +68,11 @@ async function main()
 }   
 
 function rewardForGithubActivity(message, dbPath) {
+    // console.log(message)
     type = message.embeds[0].title;
     githubUrl = message.embeds[0].url;
     var return_obj = new Object();
     return_obj["type"] = null;
-
     if(type.includes("Issue closed")) 
         type = "issue";
     else if(type.includes("commit")) 
@@ -84,15 +81,15 @@ function rewardForGithubActivity(message, dbPath) {
         return false;
     
     points = calculatePoints(type);
-
-    if (points > 0) {
+    if (points > 0)
+    {
         author = message.embeds[0].author.name;
         updatePoints(author, type, points, "", dbPath);
+        console.log("Awarded ", points, " to user ", author, " for ", type, " in db ",dbPath)
         return_obj["author"] = author;
         return_obj["githubUrl"] = githubUrl;
         return_obj["points"] = points;
-        return_obj["type"] = type;
-        console.log("Awarded ", points, " to user ", author, " for ", type);
+        return_obj["type"] = type;  
     }
     return return_obj;
 }
@@ -150,7 +147,9 @@ async function updatePoints(author, type, points, channelId, fileName) {
 
     data[author]['total'] += points;
     await postServerMemberDetailsFromDB(data);
+
 }
+
 
 function sendMessageEmbed(author, githubUrl, points, type) {
     let userId  = serverMembers[author].id
@@ -162,10 +161,9 @@ function sendMessageEmbed(author, githubUrl, points, type) {
          .setDescription(author + embedData[type].desc)
          .setThumbnail(embedData[type].thumbnailUrl)
          .setTimestamp()
-         user.send({ embeds: [messageEmbed] }); 
+         user.send({ embeds: [messageEmbed] });
  });
 }
-
 
 function getServerMembers(){
     const guild = bot.guilds.cache.get(process.env.GUILD_ID)
