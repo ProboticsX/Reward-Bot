@@ -69,6 +69,27 @@ The Reward Bot is designed to reward points for using positive words inside disc
 ![image](https://media.github.ncsu.edu/user/22719/files/834a14d5-b5f0-4055-9ff3-69644af6fe01)
 
 
+# Use Case Refinement
+
+As per the feedback received for DESIGN.md, we were not required to modify the use cases. So, everything remains the same as it was in DESIGN.md.
+
+# Test Coverage
+
+We were able to achieve the test code coverage of more than 80%. All of our test statements use meaningful assert statements which can be run using command ```npx c8 npm test```
+
+                            --------------------SS--------------------------------------------------------------------------------
+
+# Mocking Service Component
+
+Our project requires the use of Postgress server as our user database which would be queried regularly. Since we are yet to implement the server so we have used the mocking services to mock the user database on server such that it will decouple the nitty-gritty of the infrastructure layer from the bot application using ```nock```
+
+ --------------------SS--------------------------------------------------------------------------------
+
+
+# Screencast
+
+
+
 
 
 
