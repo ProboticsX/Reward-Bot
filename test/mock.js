@@ -1,21 +1,39 @@
 const chai = require("chai");
 const expect = chai.expect;
 const nock = require("nock");
-
+const fs = require('fs');
 const main = require("./mock_main.js");
-
-// Load mock data
 const data = require("./mock_data.json")
+var dbPath = 'test/mock_data.json'
+
 
 process.env.NODE_ENV = 'test'
+
+function writeFile(filePath, data) {
+  fs.writeFile(filePath, JSON.stringify(data), err =>{
+      if(err){
+          console.log(err);
+      } else {
+          console.log('File successfully written!');
+      }
+  });
+}
 
 describe('Mock Testing', function () {
 
   //MOCK SERVICE
-  var mockService = nock("https://api.github.com")
+  var mockGetService = nock("https://api.github.com")
     .persist() 
     .get("/db/servermembers")
-    .reply(200, JSON.stringify(data.db))
+    .reply(200, JSON.stringify(data.db));
+
+  var mockPostService = nock("https://api.github.com")
+    .persist() 
+    .post("/db/servermembers")
+    .reply(201, (uri, requestBody) => {
+      console.log("writing", requestBody);
+      writeFile(dbPath, JSON.parse(requestBody))
+    });
 
 
   describe('#findCommitPoints()', function () {
