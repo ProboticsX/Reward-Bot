@@ -75,20 +75,20 @@ As per the feedback received for DESIGN.md, we were not required to modify the u
 
 # Test Coverage 	✅
 
-We were able to achieve the test code coverage of more than 80%. All of our test statements use meaningful assert statements which can be run using command ```npx c8 npm test```
+We were able to achieve the test code coverage of more than 80%. As seen in the screenshot, following are the 15 test cases implemented. All of our test statements use meaningful assert statements which can be run using command ```npx c8 npm test```
 
-                            --------------------SS--------------------------------------------------------------------------------
+<img width="1126" alt="Screen Shot 2022-03-11 at 6 37 32 PM" src="https://media.github.ncsu.edu/user/22729/files/9582a47b-221e-40e2-920b-a6f8f12db29f">
+                    
 
 # Mocking Service Component 💫	
 
-Our project requires the use of Postgress server as our user database which would be queried regularly. Since we are yet to implement the server so we have used the mocking services to mock the user database on server such that it will decouple the nitty-gritty of the infrastructure layer from the bot application using ```nock```
-
- --------------------SS--------------------------------------------------------------------------------
-
+Our project requires the use of Postgress server as our user database which would be queried regularly. Since we are yet to implement the server so we have used the mocking services to mock the user database on server such that it will decouple the nitty-gritty of the infrastructure layer from the bot application using ```nock```.
+Since the implementation of database is pending for this stage, we used the ```mockGetService``` to mock the get entries functionality from the database and ```mockPostService``` is used to mock the post action to the database. 
 
 # Screencast 💯
 
-
+Link to the screencast video - 
+https://drive.google.com/file/d/1eTW553IKmTORAxyzISgEG18vRnVaVqNq/view?usp=sharing
 
 
 
