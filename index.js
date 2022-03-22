@@ -24,6 +24,17 @@ var config = {
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
   }
 
+  pool.connect(function (err, client, done) {
+    if (err) console.log(err)
+    app.listen(3000, function () {
+      console.log('listening on 3000')
+    })
+    myClient = client
+    var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
+    console.log(createTableQuery);
+    var result = myClient.query(createTableQuery);
+    console.log("From result : ", result);
+  })
 
 var mockGetService =  nock("https://api.github.com")
                         .persist()
