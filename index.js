@@ -4,11 +4,26 @@ const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MES
 require('dotenv').config();
 var Sentiment = require('sentiment');
 var dbPath = 'db/user.json'
+const express = require('express')
+const app = express()
+var pg = require('pg')
+var format = require('pg-format')
+var table = 'temp'
+var pool = new pg.Pool(config)
+var myClient
 
 let data = require("./db/user.json")  
 //const _ = require("underscore");   
 const nock = require("nock");  
 const github = require("./test/github.js");
+
+var config = {
+    user: process.env.PGUSER, // name of the user account
+    database: process.env.PGDATABASE, // name of the database
+    max: 10, // max number of clients in the pool
+    idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
+  }
+
 
 var mockGetService =  nock("https://api.github.com")
                         .persist()
