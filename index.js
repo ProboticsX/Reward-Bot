@@ -159,19 +159,29 @@ function writeFile(filePath, data) {
     return true;
   }
 
-async function getServerMemberDetailsFromDB() {
-	let userdetails = await github.getServerMemberDetails(); 
-	return userdetails[0];
+  async function getServerMemberDetailsFromDB(author) {
+	//let userdetails = await github.getServerMemberDetails();
+    var selectQuery = format('SELECT * from ' +table+ ' where username = %L', author);
+    var res = "";
+    console.log("Age query : ", selectQuery )
+    res = await myClient.query(selectQuery );
+    console.log("From res : ", res.rows[0]);
+	return res.rows[0];
 }
 
-async function postServerMemberDetailsFromDB(details) {
-	let newdetails = { "db" : [  ] }
+async function postServerMemberDetailsFromDB(data, author) {
+	/*let newdetails = { "db" : [  ] }
     let mp = {}
     for (var user in details) {
         mp[user] = details[user];
     }
     newdetails["db"].push(mp);
-	await github.postServerMemberDetails(newdetails); 
+    */
+    var updateQuery = format('UPDATE ' +table+ ' SET reward_info = %L where username = %L', data, author);
+    console.log("Age query : ", updateQuery)
+    var res = await myClient.query(updateQuery);
+    console.log("Update record result : ", res);
+	//await github.postServerMemberDetails(newdetails); 
 }
 
 async function updatePoints(author, type, points, channelId, fileName) {
