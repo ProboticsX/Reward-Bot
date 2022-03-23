@@ -21,6 +21,7 @@ var config = {
     user: process.env.PGUSER, // name of the user account
     database: process.env.PGDATABASE, // name of the database
     max: 10, // max number of clients in the pool
+    password: process.env.PGPASSWORD, //Comment this line if password is not set up
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
   }
 
@@ -194,26 +195,36 @@ async function updatePoints(author, type, points, channelId, fileName) {
     // fileName: dbpath where updates need to be made
 
 
-    let data = await getServerMemberDetailsFromDB(); 
-    if(!(author in data)){
+    let data = await getServerMemberDetailsFromDB(author);
+    console.log("Data from DB: ", data)
+    if(typeof(data) == "undefined"){
         console.log("Author does not Exists")
-        data[author] = {
+        data = {
             "commit":0,
             "issue":0,
             "pr": {},
             "total":0
         }
+        var insertQuery = format('INSERT INTO ' +table+ ' VALUES (%L, %L)', author, data);
+        console.log("Age query : ", insertQuery)
+        var res = await myClient.query(insertQuery);
+        console.log("Insert empty record : ", res);
+        
+    } else {
+        data = data['reward_info']
     }
     if(type == "pr") {
-        if(!(channelId in data[author][type]))
-            data[author][type][channelId] = 0;
-        data[author][type][channelId] += points;
+        if(!(channelId in data[type]))
+            data[type][channelId] = 0;
+        data[type][channelId] += points;
+        console.log("Updated data : ", data);
     } 
     else 
-        data[author][type] += points;
+        data[type] += points;
 
-    data[author]['total'] += points;
-    await postServerMemberDetailsFromDB(data);
+    data['total'] += points;
+    console.log("Updated data with total : ", data);
+    await postServerMemberDetailsFromDB(data, author);
 
 }
 
