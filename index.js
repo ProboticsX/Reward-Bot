@@ -3,19 +3,13 @@ const fs = require('fs');
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 require('dotenv').config();
 var Sentiment = require('sentiment');
-var dbPath = 'db/user.json'
 const express = require('express')
 const app = express()
 var pg = require('pg')
 var format = require('pg-format')
-var table = 'temp'
+var table = 'reward_bot'
 var pool = new pg.Pool(config)
 var myClient
-
-let data = require("./db/user.json")  
-//const _ = require("underscore");   
-const nock = require("nock");  
-const github = require("./test/github.js");
 
 var config = {
     user: process.env.PGUSER, // name of the user account
@@ -28,29 +22,12 @@ var config = {
   pool.connect(function (err, client, done) {
     if (err) console.log(err)
     app.listen(3000, function () {
-      console.log('listening on 3000')
+      console.log('Connected to DB')
     })
     myClient = client
     var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
-    console.log(createTableQuery);
     var result = myClient.query(createTableQuery);
-    console.log("From result : ", result);
   })
-
-var mockGetService =  nock("https://api.github.com")
-                        .persist()
-                        .get("/db/servermembers")
-                        .reply(200,
-                            JSON.stringify(data.db)
-                    );
-
-var mockPostService = nock("https://api.github.com")
-                        .persist() 
-                        .post("/db/servermembers")
-                        .reply(201, (uri, requestBody) => {
-                        console.log("Writing data to Database");
-                        writeFile(dbPath, JSON.parse(requestBody))
-                     });
 
 var serverMembers = {}
 var embedData = {
@@ -81,20 +58,20 @@ async function main()
     bot.on("message", message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
-            author_obj = rewardForGithubActivity(message, dbPath);
+            author_obj = rewardForGithubActivity(message);
             if(author_obj["type"] == "issue"){
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             } else if(author_obj["type"] == "commit") {
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
         } else {
-            author_obj = positiveMessageAnalysis(message, dbPath);
+            author_obj = positiveMessageAnalysis(message);
             sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
         }
     });
 }   
 
-function rewardForGithubActivity(message, dbPath) {
+function rewardForGithubActivity(message) {
     
     // Received the message from github
     // message is in json format
@@ -120,8 +97,7 @@ function rewardForGithubActivity(message, dbPath) {
     if (points > 0)
     {
         author = message.embeds[0].author.name;
-        updatePoints(author, type, points, "", dbPath);
-        console.log("Awarded ", points, " to user ", author, " for ", type, " in db ",dbPath)
+        updatePoints(author, type, points, "");
         return_obj["author"] = author;
         return_obj["githubUrl"] = githubUrl;
         return_obj["points"] = points;
