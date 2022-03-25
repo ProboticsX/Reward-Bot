@@ -3,27 +3,31 @@ const fs = require('fs');
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 require('dotenv').config();
 var Sentiment = require('sentiment');
-var dbPath = 'db/user.json'
+const express = require('express')
+const app = express()
+var pg = require('pg')
+var format = require('pg-format')
+var table = 'reward_bot'
+var pool = new pg.Pool(config)
+var myClient
 
-let data = require("./db/user.json")  
-//const _ = require("underscore");   
-const nock = require("nock");  
-const github = require("./test/github.js");
+var config = {
+    user: process.env.PGUSER, // name of the user account
+    database: process.env.PGDATABASE, // name of the database
+    max: 10, // max number of clients in the pool
+    password: process.env.PGPASSWORD, //Comment this line if password is not set up
+    idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
+  }
 
-var mockGetService =  nock("https://api.github.com")
-                        .persist()
-                        .get("/db/servermembers")
-                        .reply(200,
-                            JSON.stringify(data.db)
-                    );
-
-var mockPostService = nock("https://api.github.com")
-                        .persist() 
-                        .post("/db/servermembers")
-                        .reply(201, (uri, requestBody) => {
-                        console.log("Writing data to Database");
-                        writeFile(dbPath, JSON.parse(requestBody))
-                     });
+  pool.connect(function (err, client, done) {
+    if (err) console.log(err)
+    app.listen(3000, function () {
+      console.log('Connected to DB')
+    })
+    myClient = client
+    var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
+    var result = myClient.query(createTableQuery);
+  })
 
 var serverMembers = {}
 var embedData = {
@@ -54,24 +58,23 @@ async function main()
     bot.on("message", message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
-            author_obj = rewardForGithubActivity(message, dbPath);
+            author_obj = rewardForGithubActivity(message);
             if(author_obj["type"] == "issue"){
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             } else if(author_obj["type"] == "commit") {
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
         } else {
-            author_obj = positiveMessageAnalysis(message, dbPath);
+            author_obj = positiveMessageAnalysis(message);
             sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
         }
     });
 }   
 
-function rewardForGithubActivity(message, dbPath) {
+function rewardForGithubActivity(message) {
     
     // Received the message from github
     // message is in json format
-    // Receives dbPath as argument, where the points need to be updated
     // only gives rewards for closed issues or commits
     // calls the calculatePoints() function which returns the number of points to be awarded
     // calls the updatePoints to update the database
@@ -93,8 +96,7 @@ function rewardForGithubActivity(message, dbPath) {
     if (points > 0)
     {
         author = message.embeds[0].author.name;
-        updatePoints(author, type, points, "", dbPath);
-        console.log("Awarded ", points, " to user ", author, " for ", type, " in db ",dbPath)
+        updatePoints(author, type, points, "");
         return_obj["author"] = author;
         return_obj["githubUrl"] = githubUrl;
         return_obj["points"] = points;
@@ -118,66 +120,50 @@ function calculatePoints(type) {
     return 0;
 }
 
-function writeFile(filePath, data) {
-
-    // Function to write json data to the provided database path
-    // data -> The data to be written to the database
-    // filePath -> dbpath where updates need to be made
-
-    fs.writeFile(filePath, JSON.stringify(data), err =>{
-        if(err)
-            console.log(err);
-        else 
-            console.log('File successfully written!');
-    });
-    return true;
-  }
-
-async function getServerMemberDetailsFromDB() {
-	let userdetails = await github.getServerMemberDetails(); 
-	return userdetails[0];
+async function getServerMemberDetailsFromDB(author) {
+    var selectQuery = format('SELECT * from ' +table+ ' where username = %L', author);
+    var res = await myClient.query(selectQuery );
+	return res.rows[0];
 }
 
-async function postServerMemberDetailsFromDB(details) {
-	let newdetails = { "db" : [  ] }
-    let mp = {}
-    for (var user in details) {
-        mp[user] = details[user];
-    }
-    newdetails["db"].push(mp);
-	await github.postServerMemberDetails(newdetails); 
+async function postServerMemberDetailsFromDB(data, author) {
+    var updateQuery = format('UPDATE ' +table+ ' SET reward_info = %L where username = %L', data, author);
+    var res = await myClient.query(updateQuery);
 }
 
-async function updatePoints(author, type, points, channelId, fileName) {
+async function updatePoints(author, type, points, channelId) {
 
-    // Received the arguments: author, type, points, channelId, fileName
+    // Received the arguments: author, type, points, channelId
     // author -> author name
     // type -> issue, commit or pr
     // points -> number of points to be awarded
     // channelId: discord channel id
-    // fileName: dbpath where updates need to be made
 
-
-    let data = await getServerMemberDetailsFromDB(); 
-    if(!(author in data)){
-        console.log("Author does not Exists")
-        data[author] = {
+    let data = await getServerMemberDetailsFromDB(author);
+    if(typeof(data) == "undefined"){
+        console.log("User does not exist... Generating record")
+        data = {
             "commit":0,
             "issue":0,
             "pr": {},
             "total":0
         }
-    }
+        var insertQuery = format('INSERT INTO ' +table+ ' VALUES (%L, %L)', author, data);
+        var res = await myClient.query(insertQuery);        
+    } else 
+        data = data['reward_info'];
+
     if(type == "pr") {
-        if(!(channelId in data[author][type]))
-            data[author][type][channelId] = 0;
-        data[author][type][channelId] += points;
+        if(!(channelId in data[type]))
+            data[type][channelId] = 0;
+        data[type][channelId] += points;
     } 
     else 
-        data[author][type] += points;
+        data[type] += points;
 
-    data[author]['total'] += points;
-    await postServerMemberDetailsFromDB(data);
+    data['total'] += points;
+    await postServerMemberDetailsFromDB(data, author);
+    console.log("Awarded ", points, " to user ", author, " for ", type);
 
 }
 
@@ -196,7 +182,7 @@ function sendMessageEmbed(author, githubUrl, points, type) {
  });
 }
 
-function getServerMembers(){
+function getServerMembers() {
     const guild = bot.guilds.cache.get(process.env.GUILD_ID)
     guild.members.fetch()
      .then((members) => {
@@ -204,11 +190,10 @@ function getServerMembers(){
      }); 
 }
 
-function positiveMessageAnalysis(message, dbPath) {
+function positiveMessageAnalysis(message) {
 
-    // Received the arguments: message, dbPath
+    // Received the arguments: message
     // message -> message on the channel to be given a score
-    // dbPath -> dbpath where updates need to be made
     // Sentiment library is used to determine the score of the message
     // Returns the object containing author and points
 
@@ -223,7 +208,7 @@ function positiveMessageAnalysis(message, dbPath) {
     var result = sentiment.analyze(content);
     let points = result.score;
     if (points > 0) {
-        updatePoints(author, "pr", points, channelId, dbPath)
+        updatePoints(author, "pr", points, channelId);
         return_obj["author"] = author;
         return_obj["points"] = points;
     }
@@ -243,4 +228,3 @@ module.exports.updatePoints = updatePoints;
 module.exports.getServerMembers = getServerMembers;
 module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
 module.exports.sendMessageEmbed = sendMessageEmbed;
-module.exports.writeFile = writeFile;
