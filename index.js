@@ -75,7 +75,6 @@ function rewardForGithubActivity(message) {
     
     // Received the message from github
     // message is in json format
-    // Receives dbPath as argument, where the points need to be updated
     // only gives rewards for closed issues or commits
     // calls the calculatePoints() function which returns the number of points to be awarded
     // calls the updatePoints to update the database
@@ -121,60 +120,28 @@ function calculatePoints(type) {
     return 0;
 }
 
-function writeFile(filePath, data) {
-
-    // Function to write json data to the provided database path
-    // data -> The data to be written to the database
-    // filePath -> dbpath where updates need to be made
-
-    fs.writeFile(filePath, JSON.stringify(data), err =>{
-        if(err)
-            console.log(err);
-        else 
-            console.log('File successfully written!');
-    });
-    return true;
-  }
-
-  async function getServerMemberDetailsFromDB(author) {
-	//let userdetails = await github.getServerMemberDetails();
+async function getServerMemberDetailsFromDB(author) {
     var selectQuery = format('SELECT * from ' +table+ ' where username = %L', author);
-    var res = "";
-    console.log("Age query : ", selectQuery )
-    res = await myClient.query(selectQuery );
-    console.log("From res : ", res.rows[0]);
+    var res = await myClient.query(selectQuery );
 	return res.rows[0];
 }
 
 async function postServerMemberDetailsFromDB(data, author) {
-	/*let newdetails = { "db" : [  ] }
-    let mp = {}
-    for (var user in details) {
-        mp[user] = details[user];
-    }
-    newdetails["db"].push(mp);
-    */
     var updateQuery = format('UPDATE ' +table+ ' SET reward_info = %L where username = %L', data, author);
-    console.log("Age query : ", updateQuery)
     var res = await myClient.query(updateQuery);
-    console.log("Update record result : ", res);
-	//await github.postServerMemberDetails(newdetails); 
 }
 
-async function updatePoints(author, type, points, channelId, fileName) {
+async function updatePoints(author, type, points, channelId) {
 
-    // Received the arguments: author, type, points, channelId, fileName
+    // Received the arguments: author, type, points, channelId
     // author -> author name
     // type -> issue, commit or pr
     // points -> number of points to be awarded
     // channelId: discord channel id
-    // fileName: dbpath where updates need to be made
-
 
     let data = await getServerMemberDetailsFromDB(author);
-    console.log("Data from DB: ", data)
     if(typeof(data) == "undefined"){
-        console.log("Author does not Exists")
+        console.log("User does not exist... Generating record")
         data = {
             "commit":0,
             "issue":0,
@@ -182,25 +149,21 @@ async function updatePoints(author, type, points, channelId, fileName) {
             "total":0
         }
         var insertQuery = format('INSERT INTO ' +table+ ' VALUES (%L, %L)', author, data);
-        console.log("Age query : ", insertQuery)
-        var res = await myClient.query(insertQuery);
-        console.log("Insert empty record : ", res);
-        
-    } else {
-        data = data['reward_info']
-    }
+        var res = await myClient.query(insertQuery);        
+    } else 
+        data = data['reward_info'];
+
     if(type == "pr") {
         if(!(channelId in data[type]))
             data[type][channelId] = 0;
         data[type][channelId] += points;
-        console.log("Updated data : ", data);
     } 
     else 
         data[type] += points;
 
     data['total'] += points;
-    console.log("Updated data with total : ", data);
     await postServerMemberDetailsFromDB(data, author);
+    console.log("Awarded ", points, " to user ", author, " for ", type);
 
 }
 
@@ -219,7 +182,7 @@ function sendMessageEmbed(author, githubUrl, points, type) {
  });
 }
 
-function getServerMembers(){
+function getServerMembers() {
     const guild = bot.guilds.cache.get(process.env.GUILD_ID)
     guild.members.fetch()
      .then((members) => {
@@ -227,11 +190,10 @@ function getServerMembers(){
      }); 
 }
 
-function positiveMessageAnalysis(message, dbPath) {
+function positiveMessageAnalysis(message) {
 
-    // Received the arguments: message, dbPath
+    // Received the arguments: message
     // message -> message on the channel to be given a score
-    // dbPath -> dbpath where updates need to be made
     // Sentiment library is used to determine the score of the message
     // Returns the object containing author and points
 
@@ -246,7 +208,7 @@ function positiveMessageAnalysis(message, dbPath) {
     var result = sentiment.analyze(content);
     let points = result.score;
     if (points > 0) {
-        updatePoints(author, "pr", points, channelId, dbPath)
+        updatePoints(author, "pr", points, channelId);
         return_obj["author"] = author;
         return_obj["points"] = points;
     }
@@ -266,4 +228,3 @@ module.exports.updatePoints = updatePoints;
 module.exports.getServerMembers = getServerMembers;
 module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
 module.exports.sendMessageEmbed = sendMessageEmbed;
-module.exports.writeFile = writeFile;
