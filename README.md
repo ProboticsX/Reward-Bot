@@ -7,3 +7,7 @@ Shivani Shivaji Shinde (sshinde3)<br>
 Shubham Shubham (sshubha)<br>
 
 [DESIGN.md](DESIGN.md)
+
+[BOT.md](BOT.md)
+
+[PROCESS.md](PROCESS.md)
