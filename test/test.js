@@ -173,12 +173,6 @@ describe("RewardBot Tests", function() {
             assert(returnValue["points"] === result.score);
     });
 
-    it("Ensures that writeFile() updates the points in database", function() {
-        msg = {"test":{"commit":0,"issue":0,"pr":{"1234":140},"total":140}}
-        var result = bot.writeFile(dbPath, msg)
-        assert(result == true);
-    });
-
     
 });
 
