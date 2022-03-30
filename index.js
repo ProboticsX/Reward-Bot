@@ -59,7 +59,7 @@ async function main()
         getServerMembers()
         console.log("Online!!");
     });
-    bot.on("message", message => {
+    bot.on("message", async message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
             author_obj = rewardForGithubActivity(message);
@@ -69,6 +69,7 @@ async function main()
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
         } else if(message.content == "?self-stats") {
+            author_obj = await getSelfStatistics(message);
             sendMessageEmbedForSelfStatistics(author_obj["author"], author_obj["desc"], author_obj["type"]);           
         } 
         else {
@@ -175,6 +176,33 @@ async function updatePoints(author, type, points, channelId) {
 
 }
 
+async function getSelfStatistics(message) {
+    let author = message.author.username;
+    
+    var return_obj = new Object();
+    let reward_info = await getServerMemberDetailsFromDB(author);
+    if(reward_info != undefined) {
+        reward_info = reward_info["reward_info"];
+        let type = "self-stats";
+        let desc = "";
+        for(var key in reward_info) {
+            if (key == "pr"){
+                let sum = 0;
+                for(var channel in reward_info[key]){
+                    sum += reward_info[key][channel];
+                }
+                desc += "Positive Reinforcement Points : " + sum + "\n";
+            } else if(key != "Total") {
+                desc += key + " Points : " + reward_info[key] + "\n";
+            }
+        }
+        desc += "Total Points : " + reward_info["Total"] + "\n";
+        return_obj["author"] = author
+        return_obj["desc"] = desc
+        return_obj["type"] = type
+        return return_obj
+    }
+}
 
 function sendMessageEmbed(author, githubUrl, points, type) {
     let userId  = serverMembers[author].id
