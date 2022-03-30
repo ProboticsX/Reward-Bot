@@ -31,12 +31,12 @@ var config = {
 
 var serverMembers = {}
 var embedData = {
-    "commit" : {
+    "Commit" : {
         "iconURL" : 'https://w7.pngwing.com/pngs/72/974/png-transparent-computer-icons-merge-git-github-text-git-symbol-thumbnail.png',
         "desc" : ', I like the way you commit!📝',
         "thumbnailUrl" : 'https://cdn-icons-png.flaticon.com/512/4168/4168977.png'
     },
-    "issue" : {
+    "Issue" : {
         "iconURL" : 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
         "desc" : ', you are the perfect Issue Solver ✅',
         "thumbnailUrl" : 'https://www.conquestgraphics.com/images/default-source/default-album/rewards.png?sfvrsn=a333198d_0'
@@ -46,6 +46,10 @@ var embedData = {
         "desc" : ', keep appreciating and helping others!!',
         "thumbnailUrl" : 'https://cdn-icons-png.flaticon.com/512/1426/1426735.png'
     },
+    "self-stats" : {
+        "iconURL" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayx-mmozSk2BKJyPvPq6WEpgzfUOsQV2tzintsyAMRm3NaWMp3JbtF7_3odfaf9xaZzk&usqp=CAU',
+        "thumbnailUrl" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmcNU267IuEYJTD8nJ4E8iMs62B7iaahHscCHAm2JmhtHvch3BKmX2t4zCPgOrNepDRM4&usqp=CAU' 
+    }
 }
 
 async function main()
@@ -59,13 +63,17 @@ async function main()
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
             author_obj = rewardForGithubActivity(message);
-            if(author_obj["type"] == "issue"){
+            if(author_obj["type"] == "Issue"){
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
-            } else if(author_obj["type"] == "commit") {
+            } else if(author_obj["type"] == "Commit") {
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
-        } else {
+        } else if(message.content == "?self-stats") {
+            sendMessageEmbedForSelfStatistics(author_obj["author"], author_obj["desc"], author_obj["type"]);           
+        } 
+        else {
             author_obj = positiveMessageAnalysis(message);
+            if (author_obj["points"])
             sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
         }
     });
@@ -86,9 +94,9 @@ function rewardForGithubActivity(message) {
     var return_obj = new Object();
     return_obj["type"] = null;
     if(type.includes("Issue closed")) 
-        type = "issue";
+        type = "Issue";
     else if(type.includes("commit")) 
-        type = "commit";
+        type = "Commit";
     else
         return false;
     
@@ -113,9 +121,9 @@ function calculatePoints(type) {
     // return 10 points for issues
     // if type is neither issue or commit, returns 0
 
-    if(type == "issue") 
+    if(type == "Issue") 
         return 10;
-    else if(type == "commit") 
+    else if(type == "Commit") 
         return 5;
     return 0;
 }
@@ -143,10 +151,10 @@ async function updatePoints(author, type, points, channelId) {
     if(typeof(data) == "undefined"){
         console.log("User does not exist... Generating record")
         data = {
-            "commit":0,
-            "issue":0,
+            "Commit":0,
+            "Issue":0,
             "pr": {},
-            "total":0
+            "Total":0
         }
         var insertQuery = format('INSERT INTO ' +table+ ' VALUES (%L, %L)', author, data);
         var res = await myClient.query(insertQuery);        
@@ -161,7 +169,7 @@ async function updatePoints(author, type, points, channelId) {
     else 
         data[type] += points;
 
-    data['total'] += points;
+    data['Total'] += points;
     await postServerMemberDetailsFromDB(data, author);
     console.log("Awarded ", points, " to user ", author, " for ", type);
 
@@ -180,6 +188,20 @@ function sendMessageEmbed(author, githubUrl, points, type) {
          .setTimestamp()
          user.send({ embeds: [messageEmbed] });
  });
+}
+
+function sendMessageEmbedForSelfStatistics(author, desc, type) {
+    let userId  = serverMembers[author].id;
+    bot.users.fetch(userId, false).then((user) => {
+        const messageEmbed = new MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Here are your self-statistics')
+                .setAuthor({ name: "Self Statistics", iconURL: embedData[type].iconURL })
+                .setDescription(desc)
+                .setThumbnail(embedData[type].thumbnailUrl)
+                .setTimestamp()
+        user.send({ embeds: [messageEmbed] });
+    });
 }
 
 function getServerMembers() {
@@ -209,9 +231,11 @@ function positiveMessageAnalysis(message) {
     let points = result.score;
     if (points > 0) {
         updatePoints(author, "pr", points, channelId);
-        return_obj["author"] = author;
-        return_obj["points"] = points;
+    } else {
+        points = 0
     }
+    return_obj["author"] = author;
+    return_obj["points"] = points;
     return return_obj;
 }
 
