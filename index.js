@@ -49,6 +49,10 @@ var embedData = {
     "self-stats" : {
         "iconURL" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayx-mmozSk2BKJyPvPq6WEpgzfUOsQV2tzintsyAMRm3NaWMp3JbtF7_3odfaf9xaZzk&usqp=CAU',
         "thumbnailUrl" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmcNU267IuEYJTD8nJ4E8iMs62B7iaahHscCHAm2JmhtHvch3BKmX2t4zCPgOrNepDRM4&usqp=CAU' 
+    },
+    "leaderboard" : {
+        "iconURL" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayx-mmozSk2BKJyPvPq6WEpgzfUOsQV2tzintsyAMRm3NaWMp3JbtF7_3odfaf9xaZzk&usqp=CAU',
+        "thumbnailUrl" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmcNU267IuEYJTD8nJ4E8iMs62B7iaahHscCHAm2JmhtHvch3BKmX2t4zCPgOrNepDRM4&usqp=CAU' 
     }
 }
 
@@ -72,6 +76,9 @@ async function main()
             author_obj = await getSelfStatistics(message);
             sendMessageEmbedForSelfStatistics(author_obj["author"], author_obj["desc"], author_obj["type"]);           
         } 
+        else if(message.content == "?leaderboard") {
+            author_obj = await getLeaderboardDetails(message);
+        }
         else {
             author_obj = positiveMessageAnalysis(message);
             if (author_obj["points"])
@@ -79,6 +86,31 @@ async function main()
         }
     });
 }   
+
+async function getLeaderboardDetails(message) {
+    let author = message.author.username;
+    var return_obj = new Object();
+    let type = "leaderboard"
+    var selectQuery = format("SELECT username, reward_info->>'total' AS Total from " + table + " order by reward_info->>'total' desc");
+    var res = await myClient.query(selectQuery );
+    if(res != undefined) {
+        // console.log(res.rows);
+
+        desc = ''
+
+        for (var row in res.rows){
+            var username = res.rows[row]['username']
+            var total = res.rows[row]['total']
+            desc += username + ': ' +total + '\n'
+        }
+
+        console.log(desc)
+        return_obj["author"] = author
+        return_obj["desc"] = desc
+        return_obj["type"] = type
+        return return_obj
+    }
+}
 
 function rewardForGithubActivity(message) {
     
