@@ -91,20 +91,40 @@ async function getLeaderboardDetails(message) {
     let author = message.author.username;
     var return_obj = new Object();
     let type = "leaderboard"
-    var selectQuery = format("SELECT username, reward_info->>'total' AS Total from " + table + " order by reward_info->>'total' desc");
+    var selectQuery = format("SELECT username, reward_info->>'total' as total from " + table);
     var res = await myClient.query(selectQuery );
+    console.log("hello")
+    console.log(res)
+
     if(res != undefined) {
         // console.log(res.rows);
 
         desc = ''
 
+        var user_data = []
+
         for (var row in res.rows){
             var username = res.rows[row]['username']
-            var total = res.rows[row]['total']
-            desc += username + ': ' +total + '\n'
+            var total = Number(res.rows[row]['total'])
+            user_data.push([username, total])
+            
+        }
+
+        console.log(user_data)
+
+        user_data.sort((a, b) => b[1] - a[1])
+
+        console.log(user_data)
+
+        for (var row in user_data){
+
+            // console.log(row)
+            desc += user_data[row][0] + ': ' + user_data[row][1] + '\n'
+
         }
 
         console.log(desc)
+
         return_obj["author"] = author
         return_obj["desc"] = desc
         return_obj["type"] = type
