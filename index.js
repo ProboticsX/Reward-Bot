@@ -19,16 +19,6 @@ var config = {
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
   }
 
-  pool.connect(function (err, client, done) {
-    if (err) console.log(err)
-    app.listen(3000, function () {
-      console.log('Connected to DB')
-    })
-    myClient = client
-    var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
-    var result = myClient.query(createTableQuery);
-  })
-
 var serverMembers = {}
 var embedData = {
     "Commit" : {
@@ -63,6 +53,16 @@ async function main()
         getServerMembers()
         console.log("Online!!");
     });
+    pool.connect(function (err, client, done) {
+        if (err) console.log(err)
+        app.listen(3000, function () {
+          console.log('Connected to DB')
+        })
+        myClient = client
+        var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
+        var result = myClient.query(createTableQuery);
+      })
+      
     bot.on("message", async message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
