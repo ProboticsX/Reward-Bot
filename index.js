@@ -93,7 +93,7 @@ async function getLeaderboardDetails(message) {
     let author = message.author.username;
     var return_obj = new Object();
     let type = "leaderboard"
-    var selectQuery = format("SELECT username, reward_info->>'total' as total from " + table);
+    var selectQuery = format("SELECT username, reward_info->>'Total' as total from " + table);
     var res = await myClient.query(selectQuery );
     console.log("hello")
     console.log(res)
