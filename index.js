@@ -7,7 +7,7 @@ const express = require('express')
 const app = express()
 var pg = require('pg')
 var format = require('pg-format')
-var table = 'reward_bot'
+var table = 'reward'
 var pool = new pg.Pool(config)
 var myClient
 
@@ -78,6 +78,8 @@ async function main()
         } 
         else if(message.content == "?leaderboard") {
             author_obj = await getLeaderboardDetails(message);
+            sendMessageEmbedForLeaderboard(author_obj["author"], author_obj["desc"], author_obj["type"]);
+
         }
         else {
             author_obj = positiveMessageAnalysis(message);
@@ -91,7 +93,7 @@ async function getLeaderboardDetails(message) {
     let author = message.author.username;
     var return_obj = new Object();
     let type = "leaderboard"
-    var selectQuery = format("SELECT username, reward_info->>'total' as total from " + table);
+    var selectQuery = format("SELECT username, reward_info->>'Total' as total from " + table);
     var res = await myClient.query(selectQuery );
     console.log("hello")
     console.log(res)
@@ -130,6 +132,20 @@ async function getLeaderboardDetails(message) {
         return_obj["type"] = type
         return return_obj
     }
+}
+
+function sendMessageEmbedForLeaderboard(author, desc, type) {
+    let userId  = serverMembers[author].id;
+    bot.users.fetch(userId, false).then((user) => {
+        const messageEmbed = new MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Leaderboard:')
+                .setAuthor({ name: "Leaderboard", iconURL: embedData[type].iconURL })
+                .setDescription(desc)
+                .setThumbnail(embedData[type].thumbnailUrl)
+                .setTimestamp()
+        user.send({ embeds: [messageEmbed] });
+    });
 }
 
 function rewardForGithubActivity(message) {
