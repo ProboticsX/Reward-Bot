@@ -46,6 +46,10 @@ var embedData = {
         "desc" : ', keep appreciating and helping others!!',
         "thumbnailUrl" : 'https://cdn-icons-png.flaticon.com/512/1426/1426735.png'
     },
+    "self-stats" : {
+        "iconURL" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayx-mmozSk2BKJyPvPq6WEpgzfUOsQV2tzintsyAMRm3NaWMp3JbtF7_3odfaf9xaZzk&usqp=CAU',
+        "thumbnailUrl" : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmcNU267IuEYJTD8nJ4E8iMs62B7iaahHscCHAm2JmhtHvch3BKmX2t4zCPgOrNepDRM4&usqp=CAU' 
+    }
 }
 
 async function main()
@@ -64,7 +68,10 @@ async function main()
             } else if(author_obj["type"] == "Commit") {
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
-        } else {
+        } else if(message.content == "?self-stats") {
+            sendMessageEmbedForSelfStatistics(author_obj["author"], author_obj["desc"], author_obj["type"]);           
+        } 
+        else {
             author_obj = positiveMessageAnalysis(message);
             if (author_obj["points"])
             sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
@@ -181,6 +188,20 @@ function sendMessageEmbed(author, githubUrl, points, type) {
          .setTimestamp()
          user.send({ embeds: [messageEmbed] });
  });
+}
+
+function sendMessageEmbedForSelfStatistics(author, desc, type) {
+    let userId  = serverMembers[author].id;
+    bot.users.fetch(userId, false).then((user) => {
+        const messageEmbed = new MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Here are your self-statistics')
+                .setAuthor({ name: "Self Statistics", iconURL: embedData[type].iconURL })
+                .setDescription(desc)
+                .setThumbnail(embedData[type].thumbnailUrl)
+                .setTimestamp()
+        user.send({ embeds: [messageEmbed] });
+    });
 }
 
 function getServerMembers() {
