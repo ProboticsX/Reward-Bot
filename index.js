@@ -91,7 +91,20 @@ async function main()
 
 async function getLeaderboardDetails(message, myClient, table) {
 
+    // Received the arguments: message
+    // message -> message received by the bot from discord 
+    // the message aurgument helps to extract the author name
+    // This functions queries the db for all usernames and their total scores
+    // the function then orders the usernames in descending order of their total scores. 
+    // the function then returns these usernames and their total scores as a string 
+    // along with the author name
+
     let author = message.author.username;
+
+    if(author == null){
+        return false
+    }
+
     var return_obj = new Object();
     let type = "leaderboard"
     var selectQuery = format("SELECT username, reward_info->>'Total' as total from " + table);
@@ -243,8 +256,8 @@ async function updatePoints(author, type, points, channelId, myClient, table) {
 }
 
 async function getSelfStatistics(message, myClient, table) {
-    let author = message.author.username;
-    
+
+    let author = message.author.username;    
     var return_obj = new Object();
     let reward_info = await getServerMemberDetailsFromDB(author, myClient, table);
     if(reward_info != undefined) {
