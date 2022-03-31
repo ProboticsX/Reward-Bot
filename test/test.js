@@ -151,7 +151,7 @@ describe("RewardBot Tests", function() {
 
     it("ensures that calculatePoints() returns 5 points for an commit", function() {
         
-        type = "commit"
+        type = "Commit"
         let returnValue = bot.calculatePoints(type);
         assert(returnValue === 5);
 
@@ -168,34 +168,26 @@ describe("RewardBot Tests", function() {
  
 
     it("ensures that positiveMessageAnalysis() makes an entry when author isn't present in the database", function() {
-        //bot.getServerMembers();
         message = {"author": {"username": randomName(6)}, "content": "Awesome", "channelId": "1234"};
-        //console.log(message.author.username, message.content, message.channelId);
-        let returnValue = bot.positiveMessageAnalysis(message, dbPath);
+        let returnValue = bot.positiveMessageAnalysis(message, myClient, table);
         var sentiment = new Sentiment();
         var result = sentiment.analyze(message.content);
-        //console.log("From test : ", returnValue["points"]);
         assert(returnValue["points"] === result.score);
     });
     
     it("ensures that positiveMessageAnalysis() returns false on empty input - 1", function() {
         message = {"author": {"username": "test"}, "content": "", "channelId": "1234"};
-        //console.log(message.author.username, message.content, message.channelId);
-        let returnValue = bot.positiveMessageAnalysis(message, dbPath);
+        let returnValue = bot.positiveMessageAnalysis(message, myClient, table);
         assert(returnValue === false);
     });
 
     it("ensures that positiveMessageAnalysis() add the points when author is already present in the database", function() {
-            //bot.getServerMembers();
-            message = {"author": {"username": "test"}, "content": "Awesome", "channelId": "1234"};
-            //console.log(message.author.username, message.content, message.channelId);
-            let returnValue = bot.positiveMessageAnalysis(message, dbPath);
-            var sentiment = new Sentiment();
-            var result = sentiment.analyze(message.content);
-            //console.log("From test : ", returnValue["points"]);
-            assert(returnValue["points"] === result.score);
-
-            
+        message = {"author": {"username": "test"}, "content": "Awesome", "channelId": "1234"};
+        let returnValue = bot.positiveMessageAnalysis(message, myClient, table);
+        var sentiment = new Sentiment();
+        var result = sentiment.analyze(message.content);
+        assert(returnValue["points"] === result.score);
+ 
         setTimeout(function(){
             server.close(() => {
                 console.log('Closed out remaining connections');
