@@ -7,9 +7,9 @@ const express = require('express')
 const app = express()
 var pg = require('pg')
 var format = require('pg-format')
-var table = 'reward'
+var table = 'reward_bot'
 var pool = new pg.Pool(config)
-var myClient
+var mainClient
 
 var config = {
     user: process.env.PGUSER, // name of the user account
@@ -17,7 +17,7 @@ var config = {
     max: 10, // max number of clients in the pool
     password: process.env.PGPASSWORD, //Comment this line if password is not set up
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
-  }
+}
 
 var serverMembers = {}
 var embedData = {
@@ -58,74 +58,59 @@ async function main()
         app.listen(3000, function () {
           console.log('Connected to DB')
         })
-        myClient = client
+        mainClient = client
         var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
-        var result = myClient.query(createTableQuery);
+        var result = mainClient.query(createTableQuery);
       })
       
     bot.on("message", async message => {
         var author_obj = new Object();
         if (message.author.username == "GitHub") {
-            author_obj = rewardForGithubActivity(message);
+            author_obj = await rewardForGithubActivity(message, mainClient, table);
             if(author_obj["type"] == "Issue"){
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             } else if(author_obj["type"] == "Commit") {
                 sendMessageEmbed(author_obj["author"], author_obj["githubUrl"], author_obj["points"], author_obj["type"]);
             }
         } else if(message.content == "?self-stats") {
-            author_obj = await getSelfStatistics(message);
+            author_obj = await getSelfStatistics(message, mainClient, table);
             sendMessageEmbedForSelfStatistics(author_obj["author"], author_obj["desc"], author_obj["type"]);           
         } 
         else if(message.content == "?leaderboard") {
-            author_obj = await getLeaderboardDetails(message);
+            author_obj = await getLeaderboardDetails(message, mainClient, table);
             sendMessageEmbedForLeaderboard(author_obj["author"], author_obj["desc"], author_obj["type"]);
 
         }
         else {
-            author_obj = positiveMessageAnalysis(message);
+            author_obj = positiveMessageAnalysis(message, mainClient, table);
             if (author_obj["points"])
             sendMessageEmbed(author_obj["author"], null, author_obj["points"], "pr")
         }
     });
 }   
 
-async function getLeaderboardDetails(message) {
+async function getLeaderboardDetails(message, myClient, table) {
+
     let author = message.author.username;
     var return_obj = new Object();
     let type = "leaderboard"
     var selectQuery = format("SELECT username, reward_info->>'Total' as total from " + table);
     var res = await myClient.query(selectQuery );
-    console.log("hello")
-    console.log(res)
 
     if(res != undefined) {
-        // console.log(res.rows);
-
         desc = ''
-
         var user_data = []
 
-        for (var row in res.rows){
+        for (var row in res.rows) {
             var username = res.rows[row]['username']
             var total = Number(res.rows[row]['total'])
             user_data.push([username, total])
-            
         }
-
-        console.log(user_data)
 
         user_data.sort((a, b) => b[1] - a[1])
-
-        console.log(user_data)
-
-        for (var row in user_data){
-
-            // console.log(row)
+        for (var row in user_data) {
             desc += user_data[row][0] + ': ' + user_data[row][1] + '\n'
-
         }
-
-        console.log(desc)
 
         return_obj["author"] = author
         return_obj["desc"] = desc
@@ -148,7 +133,7 @@ function sendMessageEmbedForLeaderboard(author, desc, type) {
     });
 }
 
-function rewardForGithubActivity(message) {
+async function rewardForGithubActivity(message, myClient, table) {
     
     // Received the message from github
     // message is in json format
@@ -173,7 +158,7 @@ function rewardForGithubActivity(message) {
     if (points > 0)
     {
         author = message.embeds[0].author.name;
-        updatePoints(author, type, points, "");
+        updatePoints(author, type, points, "", myClient, table);
         return_obj["author"] = author;
         return_obj["githubUrl"] = githubUrl;
         return_obj["points"] = points;
@@ -197,18 +182,18 @@ function calculatePoints(type) {
     return 0;
 }
 
-async function getServerMemberDetailsFromDB(author) {
+async function getServerMemberDetailsFromDB(author, myClient, table) {
     var selectQuery = format('SELECT * from ' +table+ ' where username = %L', author);
     var res = await myClient.query(selectQuery );
 	return res.rows[0];
 }
 
-async function postServerMemberDetailsFromDB(data, author) {
+async function postServerMemberDetailsFromDB(data, author, myClient, table) {
     var updateQuery = format('UPDATE ' +table+ ' SET reward_info = %L where username = %L', data, author);
     var res = await myClient.query(updateQuery);
 }
 
-async function updatePoints(author, type, points, channelId) {
+async function updatePoints(author, type, points, channelId, myClient, table) {
 
     // Received the arguments: author, type, points, channelId
     // author -> author name
@@ -216,7 +201,7 @@ async function updatePoints(author, type, points, channelId) {
     // points -> number of points to be awarded
     // channelId: discord channel id
 
-    let data = await getServerMemberDetailsFromDB(author);
+    let data = await getServerMemberDetailsFromDB(author, myClient, table);
     if(typeof(data) == "undefined"){
         console.log("User does not exist... Generating record")
         data = {
@@ -226,7 +211,7 @@ async function updatePoints(author, type, points, channelId) {
             "Total":0
         }
         var insertQuery = format('INSERT INTO ' +table+ ' VALUES (%L, %L)', author, data);
-        var res = await myClient.query(insertQuery);        
+        var res = await myClient.query(insertQuery);  
     } else 
         data = data['reward_info'];
 
@@ -239,16 +224,16 @@ async function updatePoints(author, type, points, channelId) {
         data[type] += points;
 
     data['Total'] += points;
-    await postServerMemberDetailsFromDB(data, author);
+    await postServerMemberDetailsFromDB(data, author, myClient, table);
     console.log("Awarded ", points, " to user ", author, " for ", type);
 
 }
 
-async function getSelfStatistics(message) {
+async function getSelfStatistics(message, myClient, table) {
     let author = message.author.username;
     
     var return_obj = new Object();
-    let reward_info = await getServerMemberDetailsFromDB(author);
+    let reward_info = await getServerMemberDetailsFromDB(author, myClient, table);
     if(reward_info != undefined) {
         reward_info = reward_info["reward_info"];
         let type = "self-stats";
@@ -308,7 +293,7 @@ function getServerMembers() {
      }); 
 }
 
-function positiveMessageAnalysis(message) {
+function positiveMessageAnalysis(message, myClient, table) {
 
     // Received the arguments: message
     // message -> message on the channel to be given a score
@@ -326,7 +311,7 @@ function positiveMessageAnalysis(message) {
     var result = sentiment.analyze(content);
     let points = result.score;
     if (points > 0) {
-        updatePoints(author, "pr", points, channelId);
+        updatePoints(author, "pr", points, channelId, myClient, table);
     } else {
         points = 0
     }
@@ -348,3 +333,7 @@ module.exports.updatePoints = updatePoints;
 module.exports.getServerMembers = getServerMembers;
 module.exports.positiveMessageAnalysis = positiveMessageAnalysis;
 module.exports.sendMessageEmbed = sendMessageEmbed;
+module.exports.getServerMemberDetailsFromDB = getServerMemberDetailsFromDB;
+module.exports.postServerMemberDetailsFromDB = postServerMemberDetailsFromDB;
+module.exports.getSelfStatistics = getSelfStatistics;
+module.exports.getLeaderboardDetails = getLeaderboardDetails;

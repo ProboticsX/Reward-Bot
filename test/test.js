@@ -9,18 +9,42 @@ var dbPath = 'test/test_data.json';
 var Sentiment = require('sentiment');
 console.log = function(){};
 
+const express = require('express')
+const app = express()
+var pg = require('pg')
+var format = require('pg-format')
+var table = 'testtable'
+var pool = new pg.Pool(config)
+var myClient
+var server
+
+var config = {
+    user: process.env.PGUSER, // name of the user account
+    database: process.env.PGDATABASE, // name of the database
+    max: 10, // max number of clients in the pool
+    password: process.env.PGPASSWORD, //Comment this line if password is not set up
+    idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
+}
+
+pool.connect(function (err, client, done) {
+    if (err) console.log(err)
+    server = app.listen(3000, function () {
+        console.log("Connected to Test DB")
+    });
+    myClient = client
+    var createTableQuery = format('CREATE TABLE IF NOT EXISTS '+ table +' (username VARCHAR(255) PRIMARY KEY,reward_info JSON);');
+    var result = myClient.query(createTableQuery);
+})
+
 function randomName(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
-   }
-   return result;
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
-
-
 
 describe("RewardBot Tests", function() {
 
@@ -51,7 +75,7 @@ describe("RewardBot Tests", function() {
         assert(returnValue === false);
     });
 
-    it("ensures that rewardForGithubActivity() correctly update the points when an issue is closed", function() {
+    it("ensures that rewardForGithubActivity() correctly update the points when an issue is closed", async function() {
         // CREATE TEST OBJECT
 
         message = { embeds: [
@@ -73,9 +97,8 @@ describe("RewardBot Tests", function() {
           ]}
 
         
-        let returnValue = bot.rewardForGithubActivity(message, dbPath);
+        let returnValue = await bot.rewardForGithubActivity(message, dbPath);
         assert(returnValue["author"] ==  message.embeds[0].author.name && returnValue["points"] == 5)
-        
     });
 
     it("ensures that rewardForGithubActivity() correctly creates a new author if it doesnt exist", function() {
@@ -171,6 +194,14 @@ describe("RewardBot Tests", function() {
             var result = sentiment.analyze(message.content);
             //console.log("From test : ", returnValue["points"]);
             assert(returnValue["points"] === result.score);
+
+            
+        setTimeout(function(){
+            server.close(() => {
+                console.log('Closed out remaining connections');
+                process.exit(0);
+            });
+        }, 1000);
     });
 
     
