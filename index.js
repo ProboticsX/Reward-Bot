@@ -183,12 +183,25 @@ function calculatePoints(type) {
 }
 
 async function getServerMemberDetailsFromDB(author, myClient, table) {
+    // Received arguments: author, myClient, table
+    // author -> author name
+    // myClient -> client for the database connection
+    // table -> Reward points table
+    // This method queries the table to retrieve reward points details for the provided author
+
     var selectQuery = format('SELECT * from ' +table+ ' where username = %L', author);
     var res = await myClient.query(selectQuery );
 	return res.rows[0];
 }
 
 async function postServerMemberDetailsFromDB(data, author, myClient, table) {
+    // Received arguments: data, author, myClient, table
+    // data -> Data with which the table is to be updated for the provided author
+    // author -> author name
+    // myClient -> client for the database connection
+    // table -> Reward points table
+    // This method queries the table to update reward points details for the provided author
+
     var updateQuery = format('UPDATE ' +table+ ' SET reward_info = %L where username = %L', data, author);
     var res = await myClient.query(updateQuery);
 }

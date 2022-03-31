@@ -50,7 +50,7 @@ describe("RewardBot Tests", function() {
 
     this.timeout(5000);
 
-    it("ensures that rewardForGithubActivity() returns false on a Github activity which is not commit or issue closed", function() {
+    it("ensures that rewardForGithubActivity() returns false on a Github activity which is not commit or issue closed", async function() {
         // CREATE TEST OBJECT
 
         message = { embeds: [
@@ -71,7 +71,7 @@ describe("RewardBot Tests", function() {
             }
           ]}
 
-        let returnValue = bot.rewardForGithubActivity(message, dbPath);
+        let returnValue = await bot.rewardForGithubActivity(message, myClient, table);
         assert(returnValue === false);
     });
 
@@ -90,18 +90,18 @@ describe("RewardBot Tests", function() {
                 thumbnail: null,
                 image: null,
                 video: null,
-                author: {name : "sbabbar"},
+                author: {name : "test"},
                 provider: null,
                 footer: null
               }
           ]}
 
-        
-        let returnValue = await bot.rewardForGithubActivity(message, dbPath);
+        let returnValue = await bot.rewardForGithubActivity(message, myClient, table);
         assert(returnValue["author"] ==  message.embeds[0].author.name && returnValue["points"] == 5)
     });
 
-    it("ensures that rewardForGithubActivity() correctly creates a new author if it doesnt exist", function() {
+    
+    it("ensures that rewardForGithubActivity() correctly creates a new author if it doesnt exist", async function() {
         // CREATE TEST OBJECT
 
         message = { embeds: [
@@ -123,7 +123,7 @@ describe("RewardBot Tests", function() {
           ]}
 
         
-        let returnValue = bot.rewardForGithubActivity(message, dbPath);
+        let returnValue = await bot.rewardForGithubActivity(message, myClient, table);
         assert(returnValue["author"] ==  message.embeds[0].author.name && returnValue["points"] == 5)
         
     });
@@ -133,21 +133,12 @@ describe("RewardBot Tests", function() {
     //For updatePoints()
     it("ensures that calculatePoints() returns 10 points for an issue", function() {
         
-        type = "issue"
+        type = "Issue"
         let returnValue = bot.calculatePoints(type);
         assert(returnValue === 10);
 
     });
 
-    
-
-    it("ensures that calculatePoints() returns 10 points for an issue", function() {
-        
-        type = "issue"
-        let returnValue = bot.calculatePoints(type);
-        assert(returnValue === 10);
-
-    });
 
     it("ensures that calculatePoints() returns 5 points for an commit", function() {
         
@@ -165,7 +156,6 @@ describe("RewardBot Tests", function() {
 
     });
 
- 
 
     it("ensures that positiveMessageAnalysis() makes an entry when author isn't present in the database", function() {
         message = {"author": {"username": randomName(6)}, "content": "Awesome", "channelId": "1234"};
