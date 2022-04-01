@@ -79,7 +79,6 @@ async function main()
         else if(message.content == "?leaderboard") {
             author_obj = await getLeaderboardDetails(message, mainClient, table);
             sendMessageEmbedForLeaderboard(author_obj["author"], author_obj["desc"], author_obj["type"]);
-
         }
         else {
             author_obj = positiveMessageAnalysis(message, mainClient, table);
