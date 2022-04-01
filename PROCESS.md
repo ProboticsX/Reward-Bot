@@ -28,6 +28,20 @@
 <img width="1440" alt="Screen Shot 2022-03-25 at 6 47 19 PM" src="https://media.github.ncsu.edu/user/22729/files/9bf95571-58e4-4d55-a8ab-ba6884800568">
 <img width="1440" alt="Screen Shot 2022-03-25 at 6 42 31 PM" src="https://media.github.ncsu.edu/user/22729/files/36c726ee-00f8-4c35-9fd0-fdb2f7eeb130">
 
+## Kanban Board Sprint 2 issues
+![image](https://media.github.ncsu.edu/user/22719/files/0c884ec9-b1e6-4b00-b5b7-3492dbeed38e)
+
+## Corollary & Core Practices
+
+We practiced the following corollary practices while working on the project:
+
+1. Incremental Deployment: To begin with, we were always making regular updates to the feature and dev branches which helped us to keep track of the failing cases and do continuous monitoring of our code.
+
+2. Shared Code: All of our project code base is set up on the shared github repository and hence it helped all of us to keep progress of each other's individual work and contribution.
+
+3. Team Continuity: All of our team members have equally contributed to the project. On some days, even if someone completed his/her daily tasks then also he/she collaborated with the other team member who was yet to complete his/her daily task. This shows that our team members always sticked together and worked as a team should work.
+
+The core practice which we used in our project is "Pair Programming". In these sprints, each use case was worked upon by a pair of two people. So, two team members worked on one task at a time in which one team member would write the code while the other team member would monitor and evaluate the programming logic of the written code. Moreover, these roles were switched between the two team members periodically.
 
 ## Daily Scrum Meeting Notes
 <img width="593" alt="Screen Shot 2022-03-25 at 6 50 35 PM" src="https://media.github.ncsu.edu/user/22729/files/760c0eeb-2db0-4e31-823a-f443e4978f66">
