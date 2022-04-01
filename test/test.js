@@ -207,7 +207,9 @@ describe("RewardBot Tests", function() {
     });
 
     it("ensures that getLeaderboardDetails() returns the total scores in descending order.",async function() {
-    
+        // Test case for checking the function getLeaderboardDetails()
+        // checks whether the total scores are arranged in the descending order or not
+
         // Delete row if already exists
         var deleteQuery = format('DELETE FROM ' + table + " WHERE username = 'Kate Winslet' ");
         var res = await myClient.query(deleteQuery);
@@ -238,7 +240,34 @@ describe("RewardBot Tests", function() {
         
     });
     
-    
+    it("ensures that getSelfStatistics() returns the users and their points correctly",async function() {
+
+        // Test case for checking the function getSelfStatistics()
+        // checks whether the users and their points are being returned correctly or not
+
+        message = {"author": {"username": 'John Adams'}, "content": "", "channelId": "1234"};
+        
+        // Delete row if already exists
+        var deleteQuery = format('DELETE FROM ' + table + " WHERE username = 'John Adams' ");
+        var res = await myClient.query(deleteQuery);
+
+        // Inserting test data into our test table
+
+        data = {
+            "Commit":10,
+            "Issue":5,
+            "pr": {},
+            "Total":15
+        }
+
+        var author = 'John Adams'
+        var insertQuery = format('INSERT INTO ' + table + ' VALUES (%L, %L) ', author, data);
+        var res = await myClient.query(insertQuery);  
+
+        let returnValue = await bot.getSelfStatistics(message, myClient, table);
+        console.log(returnValue)
+        assert(returnValue['user_data']['Issue'] === 5);
+    });
   
     it("ensures that positiveMessageAnalysis() add the points when author is already present in the database", function() {
         message = {"author": {"username": "test"}, "content": "Awesome", "channelId": "1234"};

@@ -257,13 +257,26 @@ async function updatePoints(author, type, points, channelId, myClient, table) {
 
 async function getSelfStatistics(message, myClient, table) {
 
+    // Received the arguments: message, myClient, table
+    // message -> message received by the bot from discord 
+    // the message aurgument helps to extract the author name
+    // This functions queries the db for the particular user name and its statistics
+    // the statistics include the points gained by the user by doing commits, closing issues
+    // it also includes details of positive reinforecment points
+    // the function then returns these usernames and their self-stats as an object
+    // this object is then again used in future to send the personalized message-embed to the user
+
     let author = message.author.username;    
     var return_obj = new Object();
+
     let reward_info = await getServerMemberDetailsFromDB(author, myClient, table);
+    var user_data = {}
+
     if(reward_info != undefined) {
         reward_info = reward_info["reward_info"];
         let type = "self-stats";
         let desc = "";
+        
         for(var key in reward_info) {
             if (key == "pr"){
                 let sum = 0;
@@ -271,14 +284,19 @@ async function getSelfStatistics(message, myClient, table) {
                     sum += reward_info[key][channel];
                 }
                 desc += "Positive Reinforcement Points : " + sum + "\n";
+                user_data['pr'] = sum
             } else if(key != "Total") {
                 desc += key + " Points : " + reward_info[key] + "\n";
+                user_data[key] = reward_info[key]
+
             }
         }
         desc += "Total Points : " + reward_info["Total"] + "\n";
         return_obj["author"] = author
         return_obj["desc"] = desc
         return_obj["type"] = type
+        return_obj['user_data'] = user_data
+        console.log(return_obj)
         return return_obj
     }
 }
