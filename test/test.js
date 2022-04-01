@@ -46,6 +46,15 @@ function randomName(length) {
     return result;
 }
 
+function isDescending(arr = []) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i + 1] > arr[i]) {
+        return false;
+      }
+    }
+    return true;
+}
+
 describe("RewardBot Tests", function() {
 
     this.timeout(5000);
@@ -171,6 +180,66 @@ describe("RewardBot Tests", function() {
         assert(returnValue === false);
     });
 
+    // Leaderboard Unit Tests
+
+    it("ensures that getLeaderboardDetails() returns the author information correctly about the author who sent the message.",async function() {
+        message = {"author": {"username": 'John Adams'}, "content": "", "channelId": "1234"};
+        
+        // Delete row if already exists
+        var deleteQuery = format('DELETE FROM ' + table + " WHERE username = 'John Adams' ");
+        var res = await myClient.query(deleteQuery);
+
+        // Inserting test data into our test table
+
+        data = {
+            "Commit":0,
+            "Issue":5,
+            "pr": {},
+            "Total":5
+        }
+
+        var author = 'John Adams'
+        var insertQuery = format('INSERT INTO ' + table + ' VALUES (%L, %L) ', author, data);
+        var res = await myClient.query(insertQuery);  
+
+        let returnValue = await bot.getLeaderboardDetails(message, myClient, table);
+        assert(returnValue['author'] === 'John Adams');
+    });
+
+    it("ensures that getLeaderboardDetails() returns the total scores in descending order.",async function() {
+    
+        // Delete row if already exists
+        var deleteQuery = format('DELETE FROM ' + table + " WHERE username = 'Kate Winslet' ");
+        var res = await myClient.query(deleteQuery);
+
+        // Adding sample data to table
+
+        data = {
+            "Commit":10,
+            "Issue":0,
+            "pr": {},
+            "Total":10
+        }
+
+        var author = 'Kate Winslet'
+        var insertQuery = format('INSERT INTO ' + table + ' VALUES (%L, %L)', author, data);
+        var res = await myClient.query(insertQuery);
+
+        message = {"author": {"username": "Kate Winslet"}, "content": "", "channelId": "1234"};
+        let returnValue = await bot.getLeaderboardDetails(message, myClient, table);
+
+        var totals = []
+
+        for (var ud in returnValue['user_data']){
+            totals.push(returnValue['user_data'][ud][1])
+        }
+        
+        assert(isDescending(totals));
+        
+    });
+    
+    
+  
     it("ensures that positiveMessageAnalysis() add the points when author is already present in the database", function() {
         message = {"author": {"username": "test"}, "content": "Awesome", "channelId": "1234"};
         let returnValue = bot.positiveMessageAnalysis(message, myClient, table);
