@@ -11,6 +11,17 @@
 | Testing       |Evaluation of edge cases (Complete)     | [#33](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/33)
 | Mocking   | Replacing the mocking integration with the actual database integration (Complete)     | [#34](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/34)
 
+### SPRINT 2
+
+| Deliverable   | Item/Status   |  Issues/Tasks
+| ------------- | ------------  |  ------------
+| Use Case      | Implementation of self-stats use case (Complete)         | [#43](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/43)
+| Use Case      | Implementation of leaderboard use case (Complete)           |  [#44](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/44)
+| Testing      | Modification of Unit Test Cases for Use cases 1,2,3 (Complete)             |  [#45](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/45)
+| Testing     | Creation of Unit Test Cases for self-stats use case (Complete)             |  [#46](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/46)
+| Testing       |Creation of Unit Test Cases for leaderboard use case (Complete)     | [#47](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/47)
+| Testing   | Evaluation of edge cases (Complete)     | [#48](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/48)
+
 
 
 ## Kanban Board Sprint 1 issues
