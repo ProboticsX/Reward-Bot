@@ -69,11 +69,11 @@ The core practice which we used in our project is "Pair Programming". In these s
 <img width="696" alt="Screen Shot 2022-04-01 at 7 50 31 PM" src="https://media.github.ncsu.edu/user/22729/files/2a0c92ab-abf1-4d5f-af82-c9a2cf7d6a44">
 
 
-
-
-
-
-
+### Process Reflection
+Overall, throughout the sprints following things were observed -
+1. All the stories committed were completed on time and were completed uniformly without last minute hassles.
+2. All team members contributed uniformly and were available for team meetings despite other commitments.
+3. This process had us practice the industry level practices and it was overall a great experience.
 
 
 
