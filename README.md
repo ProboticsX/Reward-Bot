@@ -1,6 +1,6 @@
 # CSC510-20
 
-## Team Member
+## Team Members
 Sarthak Babbar (sbabbar) <br>
 Shruti Satish Magai (smagai)<br>
 Shivani Shivaji Shinde (sshinde3)<br>
