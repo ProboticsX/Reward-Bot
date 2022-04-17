@@ -63,3 +63,17 @@ The Reward Bot provides the self-statistics about the user personally and that i
 ![image](https://media.github.ncsu.edu/user/22719/files/95c419ab-c882-4d97-b049-495cfb5030fe)
 
 
+### USE CASE #4: Provides leaderboard details
+
+The Reward Bot provides the leaderboard statistics about all the users in the server displaying the top performers according to the total points.
+
+- Go to discord server ```Team20Server``` and type ```?leaderboard``` on the ```ta-test-channel```.
+![WhatsApp Image 2022-04-17 at 3 59 14 PM](https://media.github.ncsu.edu/user/22729/files/08ff3422-9996-41f8-b597-e1f889ef380a)
+
+
+- Navigate to ```Team20``` and you should be able to view the leaderboard details displayed on the screen.
+![WhatsApp Image 2022-04-17 at 3 58 27 PM](https://media.github.ncsu.edu/user/22729/files/ef6db8b6-ef7b-42d6-80ec-e1cf770bd8e4)
+
+
+
+
