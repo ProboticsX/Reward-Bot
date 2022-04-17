@@ -1,3 +1,18 @@
+# Acceptance Test 
+
+## Instructions
+
+1. Our project links a github repository to discord server using Webhooks. We have therefore created a new github and discord accounts for TAs to test. 
+2. Login to Github account using the following email and username: <br>
+   email: ta.testncsu@gmail.com <br>
+   username: tancsu <br>
+   password: Provided in DEPLOY.md Milestone Credentials <br>
+3. Login to discord server using the following credentials: <br>
+   Discord Server Link: https://discord.com/channels/949410002433634355 <br>
+   email: ta.testncsu@gmail.com <br>
+   username: tancsu <br>
+   password: Provided in DEPLOY.md Milestone Credentials
+
 ### USE CASE #1: Rewards for Commits 	🎁
 
 The Reward Bot is designed to reward points for every commit which a user does to the GitHub repo. The use case flow is as follows:
@@ -76,4 +91,14 @@ The Reward Bot provides the leaderboard statistics about all the users in the se
 
 
 
+### USE CASE #5: Provides the leaderboard
 
+The Reward Bot provides the leaderboard for the server. The use case is as follows:
+
+- Go to discord server Team20Server and type ?leaderboard on the ta-test-channel.
+
+<img width="889" alt="leaderboard2" src="https://media.github.ncsu.edu/user/22728/files/acdffe42-f8c3-442e-a3b1-ec7d2e5f3453">
+
+- Navigate to Team20 and you should be able to view the leaderboard of the user to be displayed on screen.
+
+![leaderboard](https://media.github.ncsu.edu/user/22728/files/aee960c2-2809-4db1-ba38-068ea47848aa)
