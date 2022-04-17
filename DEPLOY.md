@@ -91,14 +91,3 @@ The Reward Bot provides the leaderboard statistics about all the users in the se
 
 
 
-### USE CASE #5: Provides the leaderboard
-
-The Reward Bot provides the leaderboard for the server. The use case is as follows:
-
-- Go to discord server Team20Server and type ?leaderboard on the ta-test-channel.
-
-<img width="889" alt="leaderboard2" src="https://media.github.ncsu.edu/user/22728/files/acdffe42-f8c3-442e-a3b1-ec7d2e5f3453">
-
-- Navigate to Team20 and you should be able to view the leaderboard of the user to be displayed on screen.
-
-![leaderboard](https://media.github.ncsu.edu/user/22728/files/aee960c2-2809-4db1-ba38-068ea47848aa)
