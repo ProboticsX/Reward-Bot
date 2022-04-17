@@ -90,18 +90,31 @@ The Reward Bot provides the leaderboard statistics about all the users in the se
 - Navigate to ```Team20``` and you should be able to view the leaderboard details displayed on the screen.
 ![WhatsApp Image 2022-04-17 at 3 58 27 PM](https://media.github.ncsu.edu/user/22729/files/ef6db8b6-ef7b-42d6-80ec-e1cf770bd8e4)
 
+## Worksheet Deploy milestone
 
-## Daily Scrum Meeting Notes
 
-Date: 04/09/2022
+| Deliverable   | Item/Status   |  Issues/Tasks
+| ------------- | ------------  |  ------------
+| Deployment      | Implementation of Ansible playbook for setting up bot in remote environment (Complete)         | [#66](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/66)
+| Deployment      | Implementation of Ansible playbook for setting up postgres database (Complete)           |  [#67](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/67)
+| Setup      | Setup VCL for remote environment (Complete)             |  [#68](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/68)
+| Documentation     | Write acceptance testing for Bot (Complete)             |  [#69](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/69)
+| Testing       |Perform exploratory testing for Bot code (Complete)     | [#70](https://github.ncsu.edu/csc510-s2022/CSC510-20/issues/70)
+</br>
+</br>
+
+### Daily Scrum Meeting Notes
+
+#### Date: 04/09/2022
 Scrum Master: Shruti Magai
 
 Day's Tasks:
 - Discussions on tasks to be performed 
 - Created issues 
 - Distribution of work
+</br>
 
-Date: 04/10/2022
+#### Date: 04/10/2022
 Scrum Master: Shivani Shinde
 
 Previous Progress:
@@ -112,7 +125,9 @@ Day's Tasks:
 - Setup ssh access without passwords for linux machines
 - Ensuring the creation of basic ansible playbook 
 
-Date: 04/11/2022
+</br>
+
+#### Date: 04/11/2022
 Scrum Master: Shubham Shubham
 
 Previous Progress:
@@ -124,7 +139,9 @@ Day's Tasks:
 - Cloning the github repository 'csc510-s2022' using ansible playbook
 - Coping the .env file to the remote server
 
-Date: 04/12/2022
+</br>
+
+#### Date: 04/12/2022
 Scrum Master: Shivani Shinde
 
 Previous Progress:
@@ -137,7 +154,9 @@ Day's Tasks:
 - Installing postgres 14 on ubuntu 20 using ansible playbook
 - Configuring postgres 14 on ubuntu 20 using ansible playbook
 
-Date: 04/13/2022
+</br>
+
+#### Date: 04/13/2022
 Scrum Master: Sarthak Babbar
 
 Previous Progress:
@@ -148,7 +167,9 @@ Day's Tasks:
 - Ensuring Postgres is listening on *
 - Changing peer idenfication to trust and restarting postgres using ansible playbook
 
-Date: 04/14/2022
+</br>
+
+#### Date: 04/14/2022
 Scrum Master: Shruti Magai
 
 Previous Progress:
@@ -159,7 +180,9 @@ Day's Tasks:
 - Creation of new postgres user if it does not exist
 - Creation of new postgres database if it does not exist
 
-Date: 04/15/2022
+</br>
+
+#### Date: 04/15/2022
 Scrum Master: Shubham Shubham
 
 Previous Progress:
@@ -170,7 +193,9 @@ Day's Tasks:
 - Go to the directory '/project/' using the ansible playbook
 - Run the index.js using forever using the ansible playbook
 
-Date: 04/16/2022
+</br>
+
+#### Date: 04/16/2022
 Scrum Master: Shivani Shinde
 
 Previous Progress:
@@ -181,8 +206,9 @@ Day's Tasks:
 - Creation of tasks for acceptance testing for a new user
 - Performance of acceptance testing for multiple new users
 
+</br>
 
-Date: 04/17/2022
+#### Date: 04/17/2022
 Scrum Master: Sarthak Babbar
 
 Previous Progress:
@@ -192,13 +218,4 @@ Day's Tasks:
 - Created github and discord account for TAs to perform acceptance testing
 - Created test repository for TAs
 - Integrated the discord account with the existing discord server 'Team20Server'
-
-
-
-
-
-
-
-
-
 
