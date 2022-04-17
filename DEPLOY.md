@@ -63,7 +63,7 @@ The Reward Bot provides the self-statistics about the user personally and that i
 ![image](https://media.github.ncsu.edu/user/22719/files/95c419ab-c882-4d97-b049-495cfb5030fe)
 
 
-### USE CASE #4: Provides leaderboard details
+### USE CASE #5: Provides leaderboard details
 
 The Reward Bot provides the leaderboard statistics about all the users in the server displaying the top performers according to the total points.
 
