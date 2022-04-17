@@ -82,3 +82,36 @@
 
     - name: Restart postgres to reflect peer identification changes
       shell: sudo service postgresql restart
+      
+    - name: Setting variable to store database user details
+      shell: psql -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='{{postgres_user}}'" | grep -q '1' && echo 'matched' || echo 'unmatched'
+      register: user_output
+
+    - name: Create user in Postgres
+      command: psql -U postgres -c "CREATE USER {{postgres_user}} WITH SUPERUSER PASSWORD '{{postgres_user_password}}';"
+      when: user_output.stdout != 'matched'
+
+    - name: Setting varaible to store database exists details
+      shell: psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '{{postgres_database}}'" | grep -q '1' && echo 'matched' || echo 'unmatched'
+      register: db_exists_output
+
+    - name: Create DB in Postgres
+      command: psql -U postgres -c 'create database {{postgres_database}} with owner = {{postgres_user}};'
+      when: db_exists_output.stdout != 'matched'
+
+    - name: Install forever globally
+      shell: 'npm i -g forever'
+    
+    - name: Install packages based on package.json.
+      npm:
+        path: /project/
+
+    - name: Go to the folder and execute command
+      command: chdir=/project/ forever start index.js
+
+
+  handlers:
+    - name: Enable Postgresql
+      systemd:
+        name: postgresql
+        enabled: yes
