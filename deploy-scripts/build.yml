@@ -1,0 +1,29 @@
+---
+- hosts: SE_Project
+  become: yes
+  tasks:
+    - include_vars: git_token.yml
+
+    - name: Install the gpg key for nodejs LTS
+      shell: 'curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
+
+    - name: Install the nodejs
+      shell: 'sudo apt install -y nodejs'
+
+    - name: Clone Github
+      git:
+        repo: https://{{git_key}}@github.ncsu.edu/csc510-s2022/CSC510-20.git
+        dest: /project/
+        clone: yes
+        update: yes
+
+    - name: Copy env file to remote server
+      copy:
+        src: .env
+        dest: /project
+
+    - name: Update apt repo and cache on all Ubuntu boxes
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
