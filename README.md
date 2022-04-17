@@ -11,3 +11,5 @@ Shubham Shubham (sshubha)<br>
 [BOT.md](BOT.md)
 
 [PROCESS.md](PROCESS.md)
+
+[DEPLOY.md](DEPLOY.md)
