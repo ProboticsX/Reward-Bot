@@ -91,4 +91,114 @@ The Reward Bot provides the leaderboard statistics about all the users in the se
 ![WhatsApp Image 2022-04-17 at 3 58 27 PM](https://media.github.ncsu.edu/user/22729/files/ef6db8b6-ef7b-42d6-80ec-e1cf770bd8e4)
 
 
+## Daily Scrum Meeting Notes
+
+Date: 04/09/2022
+Scrum Master: Shruti Magai
+
+Day's Tasks:
+- Discussions on tasks to be performed 
+- Created issues 
+- Distribution of work
+
+Date: 04/10/2022
+Scrum Master: Shivani Shinde
+
+Previous Progress:
+- Finalized tasks to be performed  
+
+Day's Tasks:
+- Create Ubuntu vcl reservations 
+- Setup ssh access without passwords for linux machines
+- Ensuring the creation of basic ansible playbook 
+
+Date: 04/11/2022
+Scrum Master: Shubham Shubham
+
+Previous Progress:
+- Ubuntu Setup Completion
+
+Day's Tasks:
+- Resolving node.js version issue 
+- Installing node.js version 16 on ubuntu using ansible playbook
+- Cloning the github repository 'csc510-s2022' using ansible playbook
+- Coping the .env file to the remote server
+
+Date: 04/12/2022
+Scrum Master: Shivani Shinde
+
+Previous Progress:
+- Finished installation of node.js version 16 on ubuntu using ansible playbook
+- Finished cloning the github repository and coping of .env file to the remote server
+
+Day's Tasks:
+- Installing packages necessary for the postgres setup using ansible playbook
+- Resolving the postgres version issue
+- Installing postgres 14 on ubuntu 20 using ansible playbook
+- Configuring postgres 14 on ubuntu 20 using ansible playbook
+
+Date: 04/13/2022
+Scrum Master: Sarthak Babbar
+
+Previous Progress:
+- Finished postgres setup using ansible playbook
+
+Day's Tasks:
+- Adding new postgres configuration through ansible playbook
+- Ensuring Postgres is listening on *
+- Changing peer idenfication to trust and restarting postgres using ansible playbook
+
+Date: 04/14/2022
+Scrum Master: Shruti Magai
+
+Previous Progress:
+- Finalized the postgres setup 
+
+Day's Tasks:
+- Starting and enabling the postgres services using the ansible playbook
+- Creation of new postgres user if it does not exist
+- Creation of new postgres database if it does not exist
+
+Date: 04/15/2022
+Scrum Master: Shubham Shubham
+
+Previous Progress:
+- Postgres Setup Complete
+
+Day's Tasks:
+- Install packages based on package.json using the ansible playbook
+- Go to the directory '/project/' using the ansible playbook
+- Run the index.js using forever using the ansible playbook
+
+Date: 04/16/2022
+Scrum Master: Shivani Shinde
+
+Previous Progress:
+Bot setup complete using the ansible playbook on the ubuntu 20
+
+Day's Tasks:
+- Passing github tokens and database details without exposing in ansible playbook
+- Creation of tasks for acceptance testing for a new user
+- Performance of acceptance testing for multiple new users
+
+
+Date: 04/17/2022
+Scrum Master: Sarthak Babbar
+
+Previous Progress:
+- Completion of acceptance testing
+
+Day's Tasks:
+- Created github and discord account for TAs to perform acceptance testing
+- Created test repository for TAs
+- Integrated the discord account with the existing discord server 'Team20Server'
+
+
+
+
+
+
+
+
+
 
