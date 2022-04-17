@@ -54,3 +54,31 @@
         update_cache: yes
       notify:
         - Enable Postgresql
+
+    - name: Ensure PostgreSQL is listening on *
+      lineinfile:
+        dest: /etc/postgresql/14/main/postgresql.conf
+        regexp: '^listen_addresses\s*='
+        line: "listen_addresses='*'"
+        state: present
+
+    - name: Restart postgres
+      shell: sudo service postgresql restart
+
+    - name: Add new configuration to "pg_hba.conf"
+      blockinfile:
+        dest: /etc/postgresql/14/main/pg_hba.conf
+        block: |
+          host    all             all             0.0.0.0/0                md5
+          host    all             all             ::/0                     md5
+
+    - name: Restart postgres to reflect new configuration changes
+      shell: sudo service postgresql restart
+
+    - name: Change peer identification to trust
+      shell: /bin/sed -i '/^local/s/peer/trust/' /etc/postgresql/14/main/pg_hba.conf
+      args:
+        warn: no
+
+    - name: Restart postgres to reflect peer identification changes
+      shell: sudo service postgresql restart
