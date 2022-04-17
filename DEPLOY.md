@@ -4,7 +4,7 @@
 
 1. Our project links a github repository to discord server using Webhooks. We have therefore created a new github and discord accounts for TAs to test. 
 2. Login to Github account using the following email and username: <br>
-   Link: https://github.com/tancsu/Github-test/blob/main/README.md
+   Link: https://github.com/tancsu/Github-test/blob/main/README.md <br>
    email: ta.testncsu@gmail.com <br>
    username: tancsu <br>
    password: Provided in DEPLOY.md Milestone Credentials <br>
