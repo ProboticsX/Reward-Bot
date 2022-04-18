@@ -219,3 +219,9 @@ Day's Tasks:
 - Created test repository for TAs
 - Integrated the discord account with the existing discord server 'Team20Server'
 
+</br>
+</br>
+
+## Screencast
+https://drive.google.com/file/d/1E44PlUhVZypBTcNDjE5GMq2O6PFymbAK/view?usp=sharing
+
