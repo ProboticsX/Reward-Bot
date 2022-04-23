@@ -1,3 +1,11 @@
+### The problem your bot solved
+
+We propose a bot that promotes positive reinforcement in collaborative projects involving multiple team members. Such a bot could be crucial especially in today's remote work environments, where people are unable to connect at an emotional level and tend to become demotivated when they are not rewarded for their collaborative efforts.
+
+Our bot acts as a secondary reinforcer for actions such as answering GitHub issues, regular commits to a repository, and using positive words during conversations on Discord channels. Our bot aims to develop desirable stimuli among the users motivating them to collaborate more. The bot would provide channel statistics and self statistics features by monitoring the events on Discord channels and GitHub events. 
+
+Students/colleagues are generally disinclined to come forward and assist their peers when collaboration is desired. A bot would be a good solution for overcoming the issue, since it's automatic with unbiased decision-making abilities would promote a healthy study/work environment. It would help in building a deeper personal connection with their team members. 
+
 
 ### Limitations:
 - The Reward bot provides static points to the users for doing commits irrespective of the length of the commit (+/-, additions/deletions) made by the user.
