@@ -6,6 +6,60 @@ Our bot acts as a secondary reinforcer for actions such as answering GitHub issu
 
 Students/colleagues are generally disinclined to come forward and assist their peers when collaboration is desired. A bot would be a good solution for overcoming the issue, since it's automatic with unbiased decision-making abilities would promote a healthy study/work environment. It would help in building a deeper personal connection with their team members. 
 
+## Primary features and screenshots.
+
+Our bot allow also provides user the following features:<br>
+1. Rewards user for committing on Github repository <br>
+
+User commits on Github Repository <br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/62f280fc-1f29-4723-80e1-3bdbd44168db)<br>
+
+Bot rewards the user for the activity<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/da868f84-1944-4b7a-a492-6d6fdbd36d28)<br>
+
+2. Rewards user for closing an Github issue <br>
+
+User closes an Github issue<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/e491fb9d-4d35-4450-bc95-18f59775d930)<br>
+
+Bot catches the activity and rewards the user for it<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/d73fb2a3-d18b-472e-a875-f2048e1b8937)<br>
+
+3. Using positive feedback for other team members in channel conversations<br>
+
+User posts something positive on the discord channel<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/a5fd7827-ca04-4565-8d48-c2e6e3b5d56f)<br>
+
+Bot rewards user for the same<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/834a14d5-b5f0-4055-9ff3-69644af6fe01)<br>
+
+4. Statistical overview of a person’s rewards at that particular time<br>
+
+User queries bot for his/her statistics<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/41aaa7e1-c6cf-4b6e-a674-5807e0cad660)<br>
+
+Bot sends the detailed statistics to the user<br>
+
+![image](https://media.github.ncsu.edu/user/22719/files/95c419ab-c882-4d97-b049-495cfb5030fe)<br>
+
+5. The leaderboard position of the server members at any particular time period<br>
+
+User queries bot for the leaderboard<br>
+
+![WhatsApp Image 2022-04-17 at 3 59 14 PM](https://media.github.ncsu.edu/user/22729/files/08ff3422-9996-41f8-b597-e1f889ef380a)<br>
+
+Bot sends the detailed leaderboard<br>
+
+![WhatsApp Image 2022-04-17 at 3 58 27 PM](https://media.github.ncsu.edu/user/22729/files/ef6db8b6-ef7b-42d6-80ec-e1cf770bd8e4)<br>
+
+
 ## Reflection on the development process and project
 
 #### Software Engineering Practices
